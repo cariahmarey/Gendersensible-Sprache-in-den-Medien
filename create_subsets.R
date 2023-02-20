@@ -10,7 +10,7 @@ Genderstern|Gender-Sternchen|Gendersternchen|grammatisches Geschlecht|Genderling
 gender-inklusive Sprache|gender inklusive Sprache|genderinklusive Sprache|geschlechterinklusive Sprache|
 geschlechter-inklusive Sprache|geschlechter inlusive Sprache|feministische Sprache|geschlechtsspezifische Sprache|
 geschlechterspezifische Sprache|geschlechts-spezifische Sprache|geschlechter-spezifische Sprache|sexistische Sprache|
-sexistischer Sprachgebrauch"
+sexistischer Sprachgebrauch|gendert|genderte|genderten|gegendert|gegenderte|gendernde|gendernd"
 
 #-------------------------import the full datasets
 faz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\faz_full.csv", fileEncoding = "UTF-8")
