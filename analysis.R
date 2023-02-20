@@ -1,4 +1,6 @@
 library(ggplot2)
+library(quanteda)
+options(stringsAsFactors = F)
 
 #-------------------------import the subset datasets
 faz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv", fileEncoding = "UTF-8")
@@ -46,6 +48,8 @@ for (i in 1:length(list_subsets)) {
 regex_list <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)", 
                 "·in", "·innen", "\\\\_in", "\\\\_innen", "\\/in", "\\/innen", "\\\\/-in", "\\\\/-innen", 
                 "[A-Z][a-z]+(In|Innen)")
+
+#-------------- barcharts
 
 # create barcharts for every subset where we look for the presence of the regexes in the body
 for (i in 1:length(list_subsets)) {
@@ -115,6 +119,36 @@ for (i in 1:length(list_subsets)) {
   }
 }
 
+#-------------- co-occurrences
+# create corpus
+welt_corpus <- corpus(welt_subset$body, docnames = welt_subset$X)
 
 
+# Check if at least one string in the list is in the dataset
+if (any(regex_list %in% welt_subset)) {
+  
+  # Get the preceding and succeeding string
+  for (i in seq_along(welt_subset$body)) {
+    if (welt_subset$body[i] %in% my_list) {
+      if (i > 1) {
+        preceding_string <- welt_subset$body[i-1]
+      } else {
+        preceding_string <- NA
+      }
+      if (i < length(welt_subset$body)) {
+        succeeding_string <- welt_subset$body[i+1]
+      } else {
+        succeeding_string <- NA
+      }
+      break
+    }
+  }
+}
 
+welt_subset$body[i]
+i
+
+# Print results
+print(paste("Found a matching string in the dataset:", welt_subset$body[i]))
+print(paste("Preceding string:", preceding_string))
+print(paste("Succeeding string:", succeeding_string))
