@@ -44,6 +44,7 @@ gendered_words2 <- data.frame()
 
 # Loop through each page
 while (TRUE) {
+  
   # Extract the table body from the current page
   table <- page %>% html_nodes("table") %>% html_table(fill = TRUE)
   gendered_words2 <- rbind(gendered_words2, table)
@@ -81,8 +82,7 @@ gendered_words <- data.frame(gendered_words)
 gendered_words <- gendered_words[order(gendered_words$gendered_words),]
 gendered_words <- data.frame(gendered_words)
 
-
-write.csv(gendered_words, "gendered_words.csv")
+#------------ clean the df of gendered words and add the regexes at the end
 
 library(stringr)
 library(splitstackshape)
@@ -93,3 +93,26 @@ gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove rows that contain "[" or "]", because they don't contain genderneutral terms
 gendered_words_splitted <- gendered_words_splitted[!grepl("\\[|\\]", gendered_words_splitted$gendered_words),]
 gendered_words_splitted <- data.frame(gendered_words_splitted)
+# remove "..."
+gendered_words_splitted$gendered_words_splitted <- sub("\\...", "", gendered_words_splitted$gendered_words_splitted)
+gendered_words_splitted <- data.frame(gendered_words_splitted)
+# remove rows that contain more than one string
+gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted, 1, function(x) any(lengths(strsplit(as.character(x), " ")) > 1)),]
+gendered_words_splitted <- data.frame(gendered_words_splitted)
+# remove rows where any cell starts with a lowercase character
+gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted, 1, function(x) any(grepl("^[[:lower:]]", as.character(x)))),]
+gendered_words_splitted <- data.frame(gendered_words_splitted)
+# remove duplicates
+gendered_words_splitted <- gendered_words_splitted[!duplicated(gendered_words_splitted),]
+gendered_words_splitted <- data.frame(gendered_words_splitted) #4586 rows
+
+# define regexes for gendered words
+regex_gendered_words <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)", 
+                          "·in", "·innen", "\\\\_in", "\\\\_innen", "\\/in", "\\/innen", "\\\\/-in", "\\\\/-innen", 
+                          "[A-Z][a-z]+(In|Innen)","\\[A-Z][a-z]+*", "[A-Z][a-z]+ und +[A-Z][a-z]+[in|innen]","[A-Z][a-z]+[in|innen]+ und +[A-Z][a-z]")
+
+# Add new rows from list
+gendered_words_splitted <- rbind(gendered_words_splitted, data.frame(gendered_words_splitted = unlist(regex_gendered_words)))
+
+# export csv 
+write.csv(gendered_words_splitted, "gendered_words_splitted.csv")
