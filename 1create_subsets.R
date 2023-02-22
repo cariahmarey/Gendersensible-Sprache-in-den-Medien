@@ -51,15 +51,67 @@ taz_subset_gender <- taz_full[apply(taz_full[, c("title", "url", "keywords","des
 welt_subset_gender <- welt_full[apply(welt_full[, c("title", "url", "keywords","description")], 
                                     1, function(x) any(grepl(search_pattern, x, ignore.case = T))), ]
 
-# create subsets without paywall
+# create subsets without paywall (taz has no paywall)
 faz_subset <- subset(faz_subset_gender, paywall == 0)
 spiegel_subset <- subset(spiegel_subset_gender, paywall == 0)
 sueddeutsche_subset <- subset(sueddeutsche_subset_gender, paywall == 0)
-taz_subset <- taz_subset_gender
 welt_subset <- subset(welt_subset_gender, paywall == 0)
 
-# delete "Leserbriefe" from Süddeutsche Subset Corpus
+# delete "Leserbriefe" from Süddeutsche Subset 
 sueddeutsche_subset <- sueddeutsche_subset[!grepl("Leserbriefe", sueddeutsche_subset$keywords),]
+
+# transform unicode characters in FAZ Subset 
+### define a lookup table for all special characters and their corresponding characters
+unicode_specialcharacters <- c("<U\\+002D>" = "-", "<U\\+0020>" = " ", "<U\\+0021>" = "!", 
+                               "<U\\+0022>" = "\"", "<U\\+0023>" = "#", "<U\\+0024>" = "$", 
+                               "<U\\+0025>" = "%", "<U\\+0026>" = "&", "<U\\+0027>" = "'", 
+                               "<U\\+0028>" = "(", "<U\\+0029>" = ")", "<U\\+002A>" = "*", 
+                               "<U\\+002B>" = "+", "<U\\+002C>" = ",", "<U\\+002E>" = ".", 
+                               "<U\\+002F>" = "/", "<U\\+003A>" = ":", "<U\\+003B>" = ";", 
+                               "<U\\+003C>" = "<", "<U\\+003D>" = "=", "<U\\+003E>" = ">", 
+                               "<U\\+003F>" = "?", "<U\\+0040>" = "@", "<U\\+005B>" = "[", 
+                               "<U\\+005C>" = "\\", "<U\\+005D>" = "]", "<U\\+005E>" = "^", 
+                               "<U\\+005F>" = "_", "<U\\+0060>" = "`", "<U\\+007B>" = "{", 
+                               "<U\\+007C>" = "|", "<U\\+007D>" = "}", "<U\\+007E>" = "~", 
+                               "<U\\+2019>" = "'", "<U\\+201A>" = ",", "<U\\+201C>" = "\"", 
+                               "<U\\+201D>" = "\"", "<U\\+201E>" = "\"", "<U\\+2030>" = "%", 
+                               "<U\\+2039>" = "<", "<U\\+203A>" = ">", "<U\\+2013>" = "–",
+                               "<U\\+02BC>" = "ʼ", "<U\\+2018>" = "‘", "<U\\+00A7>" = "§",
+                               "<U\\+20AC>" = "€")
+
+### manually replace all German Unicode characters and special characters
+faz_subset[] <- lapply(faz_subset, function(x) {
+  for (key in names(unicode_specialcharacters)) {
+    x <- gsub(key, unicode_specialcharacters[[key]], x)
+  }
+  x <- gsub("<U\\+00E4>", "ä", x)
+  x <- gsub("<U\\+00C4>", "Ä", x)
+  x <- gsub("<U\\+00F6>", "ö", x)
+  x <- gsub("<U\\+00D6>", "Ö", x)
+  x <- gsub("<U\\+00FC>", "ü", x)
+  x <- gsub("<U\\+00DC>", "Ü", x)
+  x <- gsub("<U\\+00DF>", "ß", x)
+  x <- gsub("<U\\+00E9>", "é", x)
+  x <- gsub("<U\\+00E8>", "è", x)
+  x <- gsub("<U\\+00E1>", "á", x)
+  x <- gsub("<U\\+00E7>", "ç", x)
+  x <- gsub("<U\\+00C5>", "Å", x)
+  x <- gsub("<U\\+00F8>", "ø", x)
+  x <- gsub("<U\\+00AD>", "-", x)
+  x <- gsub("<U\\+03A9>", "Ω", x)
+  x <- gsub("<U\\+012B>", "ī", x)
+  return(x)
+})
+
+# delete rows from Welt Subset which contain the gibberish language
+welt_subset <- welt_subset[!grepl("uuu |elu |vnlpe ", welt_subset$body),]
+
+# delete rows that contain "NA" in the body
+faz_subset <- faz_subset[complete.cases(faz_subset$body), ]
+spiegel_subset <- spiegel_subset[complete.cases(spiegel_subset$body), ]
+sueddeutsche_subset <- sueddeutsche_subset[complete.cases(sueddeutsche_subset$body), ]
+taz_subset <- taz_subset[complete.cases(taz_subset$body), ]
+welt_subset <- welt_subset[complete.cases(welt_subset$body), ]
 
 # put subsets into list
 list_subsets <- list(faz_subset, spiegel_subset, sueddeutsche_subset, taz_subset, welt_subset)
