@@ -102,9 +102,12 @@ gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove rows where any cell starts with a lowercase character
 gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted, 1, function(x) any(grepl("^[[:lower:]]", as.character(x)))),]
 gendered_words_splitted <- data.frame(gendered_words_splitted)
+# remove rows which contain "*", "_" or "/" in between the word
+gendered_words_splitted <- gendered_words_splitted[!grepl("^[^*/_]*[*_/][^*/_]*$", gendered_words_splitted$gendered_words_splitted), ]
+gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove duplicates
 gendered_words_splitted <- gendered_words_splitted[!duplicated(gendered_words_splitted),]
-gendered_words_splitted <- data.frame(gendered_words_splitted) #4586 rows
+gendered_words_splitted <- data.frame(gendered_words_splitted) #1572 rows
 
 # define regexes for gendered words
 regex_gendered_words <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)", 

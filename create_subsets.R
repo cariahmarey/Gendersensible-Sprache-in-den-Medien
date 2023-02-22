@@ -58,6 +58,9 @@ sueddeutsche_subset <- subset(sueddeutsche_subset_gender, paywall == 0)
 taz_subset <- taz_subset_gender
 welt_subset <- subset(welt_subset_gender, paywall == 0)
 
+# delete "Leserbriefe" from Süddeutsche Subset Corpus
+sueddeutsche_subset <- sueddeutsche_subset[!grepl("Leserbriefe", sueddeutsche_subset$keywords),]
+
 # put subsets into list
 list_subsets <- list(faz_subset, spiegel_subset, sueddeutsche_subset, taz_subset, welt_subset)
 
@@ -88,9 +91,9 @@ for (i in 1:length(list_subsets)) {
 }
 
 # export dataframes as csvs
-write.csv(faz_subset_gender, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv")
-write.csv(spiegel_subset_gender, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\spiegel_subset.csv")
-write.csv(sueddeutsche_subset_gender, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\sueddeutsche_subset.csv")
-write.csv(taz_subset_gender, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv")
-write.csv(welt_subset_gender, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\welt_subset.csv")
+write.csv(faz_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv")
+write.csv(spiegel_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\spiegel_subset.csv")
+write.csv(sueddeutsche_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\sueddeutsche_subset.csv")
+write.csv(taz_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv")
+write.csv(welt_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\welt_subset.csv")
 
