@@ -26,18 +26,16 @@ filter1 <- function (DTM){
   #load gender list
   genderworddoc<- read.csv("gendered_words_splitted.csv")
   #create list of words
-  genderwordlist<-c(genderworddoc1[["gendered_words_splitted"]])
+  genderwordlist<-c(genderworddoc[["gendered_words_splitted"]])
   
   #filter a DTM by the genderwordlist
   dtm_filtered_1<-dfm_select(DTM,
                              pattern = genderwordlist,
                              selection ="keep",padding = FALSE)
   
-  #create new dtm sums for Loglikelyhoodtest
+
   
-  sum_dtm_filtered_1 <- colSums(dtm_filtered_1)
-  
-  return(sum_dtm_filtered_1)
+  return(dtm_filtered_1)
 }
 
 filter1(taz_DTM)
@@ -116,15 +114,14 @@ filter2 <- function (NewTokens){
                                          "·_in", "·_innen", "__in", "__innen", "/_in", "/_innen", "-_in", "-_innen"),
                              selection ="keep")#again, something does not work with the reg exes
   
-  #sum up columns for loglikelyhod calculation
+
   
-  sum_dtm_filtered_2 <- colSums(dtm_filtered_2)
+ 
   
-  return(sum_dtm_filtered_2)
+  return(dtm_filtered_2)
 }
 
-#test
-filter2(toks)
+
 
 
 #------------------------------3: Filter dtm by doppelnennung
@@ -143,14 +140,18 @@ filter3 <- function (corpus){
   #and calculate loklikelyhood with this
   
   num_doppelnennung <- str_count(corpus,"([A-Z][a-z]* und [A-Z][a-z]*(innen|in))|([A-Z][a-z]*(innen|in) und [A-Z][a-z]*)")
+  
   filter3sum <-sum(num_doppelnennung)
   
+  filter3 <- as.numeric(filter3sum)
+  names(filter3) <- "Doppelnennung"
   
-  return(filter3sum)
+  
+  
+  return(filter3)
 }
 
-#test
-filter3(taz_corpus)
+
 
 #notes
 
@@ -171,5 +172,8 @@ filter3(taz_corpus)
                                     #filter3=       ))
 
 #all_filtered_dtm <- dfm_lookup(taz_DTM,full_filter_dtm,nomatch = "unmatched")
+
+
+
 
 
