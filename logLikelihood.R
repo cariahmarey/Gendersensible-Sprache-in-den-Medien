@@ -10,12 +10,9 @@ library(quanteda)
 #--------Preparation
 
 #sum up columns for each term in a certain DTM
-term_in_docs_taz <- colSums(taz_DTM)
-term_in_docs_comparison <- colSums(comparison_DTM)
 
 #define the term counts of the target and comparison:
-termCountsTarget <- term_in_docs_taz
-termCountsComparison <- term_in_docs_comparison
+
 
 #----------------#Version 1: Log Likelihood function
 #for a certain pattern (can be used to look up individual terms):
@@ -62,7 +59,7 @@ print(logLikelihood)
 
 #----------------------------2. loglikelyhood (general form)
 
-calculateLogLikelihood2 <- function(termCountsTarget, termCountsComparison, minSignificance = 6.63) {  
+calculateLogLikelihood2 <- function(termCountsTarget, termCountsComparison, sumalterms_comparison, sumalterms_target, minSignificance = 6.63) {  
   
   uniqueTerms <- setdiff(names(termCountsTarget), names(termCountsComparison))
   
@@ -74,8 +71,8 @@ calculateLogLikelihood2 <- function(termCountsTarget, termCountsComparison, minS
   
   a <- termCountsTarget[termsToCompare]
   b <- termCountsComparison[termsToCompare]
-  c <- sum(termCountsTarget)
-  d <- sum(termCountsComparison)
+  c <- sumalterms_target
+  d <- sumalterms_comparison
   Expected1 = c * (a+b) / (c+d)
   Expected2 = d * (a+b) / (c+d)
   t1 <- a * log((a/Expected1) + (a == 0))
@@ -92,11 +89,3 @@ calculateLogLikelihood2 <- function(termCountsTarget, termCountsComparison, minS
   
   return(logLikelihood)
 }
-#-------function implementation: loglikelyhood2
-
-
-logLikelihood2 <- calculateLogLikelihood2(termCountsTarget, 
-                                          termCountsComparison, 
-                                          minSignificance = 6.63)
-
-print(logLikelihood2)
