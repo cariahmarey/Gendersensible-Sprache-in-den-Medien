@@ -1,6 +1,9 @@
 options(stringsAsFactors = FALSE)
 library(quanteda)
 
+#Baustellen in diesem Skript: SchülerInnen wird nicht gefunden, wegen lowercasing the tokens
+#                             word boundaries bei doppelnennung sind nicht im reg ex, dadurch false positives
+
 #this script is used to filter the dtm's by differnt forms of gendered language
 #1. the first part filters a dtm, for a list of words of gendered language created by
 #the input of gender.de and richtiggendern
@@ -29,11 +32,6 @@ sum_dtm_filtered_1 <- colSums(dtm_filtered_1)
 
 #------------------------------2: Filter dtm by reg Ex list
 
-#regex's to look for:
-regex_list <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)", 
-                "·in", "·innen", "\\\\_in", "\\\\_innen", "\\/in", "\\/innen", "\\\\/-in", "\\\\/-innen", 
-                "[A-Z][a-z]+(In|Innen)", "[A-Z][a-z]+*")#CapitalLetters are important here!
-
 # in the tokenization the * symbol is put as a single token, 
 #: stays in the middle of the word, 
 #() become single tokens
@@ -45,9 +43,9 @@ regex_list <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)",
 
 
 # Here is a sample Text to text how to do that
-sample <- "Hello schüler_innen leher/-innen my name is Schüler·innen Christina. 50 Sometimes Lehrer/in we get some weirdness
-Hello my name is Michael, 
-sometimes schmim(innen) we get some Lehere*in weird,and odd, results-- 50 I  want to replace the 
+sample <- "hus_in Schulerin und Schuler schüler und leher my name is Schüler·innen Christina. 50 Sometimes Lehrer/in we get some weirdness
+Hello my name is Michael:in, 
+sometimes schmim(innen) we get some Sculer und Lehereinnen weird,and odd, results-- 50 I  want to hund und katin replace the 
  50s"
 corpus<-corpus(sample)
 toks<-tokens(corpus)
@@ -89,18 +87,18 @@ applyfilter2 <- function(tokens) {
 }
 
 
-#apply these steps to the tokens of the copurs
-tokens<-toks
+#apply these steps to the tokens of the corpurs
 tokens_filter2<- applyfilter2(toks)
 
 #create dtm out of the new tokens
 
 filter2_dtm <- dfm(tokens_filter2)
+print(filter2_dtm)
 
 #filter a DTM by the regexlist
 dtm_filtered_2<-dfm_select(filter2_dtm,
-                           pattern = c("\\*_in", "\\*_innen", ":_in", ":_innen", "\\(_in_\\)", "\\(_innen_\\)", 
-                                       "·_in", "·_innen", "\\\\__in", "\\\\__innen", "\\/_in", "\\/_innen", "\\\\-_in", "\\\\-_innen"),
+                           pattern = c("*_in","*_innen",":_in",":_innen", "(_in_)", "(_innen_)", 
+                          "·_in", "·_innen", "__in", "__innen", "/_in", "/_innen", "-_in", "-_innen"),
                            selection ="keep")#again, something does not work with the reg exes
 
 #sum up columns for loglikelyhod calculation
@@ -110,41 +108,28 @@ sum_dtm_filtered_2 <- colSums(dtm_filtered_2)
 
 #------------------------------3: Filter dtm by doppelnennung
 
-#Pattern to look for:
-regex_list_doppelnennung <-c("[A-Z][a-z]+ und +[A-Z][a-z]+[in|innen]",
-                             "[A-Z][a-z]+[in|innen]+ und +[A-Z][a-z]")
-#create 3-grams first
 
-tokens_3gram <- tokens_ngrams(comparison_tokens, n =3)
-head(tokens_3gram[[1]], 30)
-
-#Do not Lowercase (?maybe already from the beginning)
-
-#filter 3grams for regex:
-
-filtered_3grams <- tokens_select(tokens_3gram, pattern = "*und*"#ich kriege die reg ex nicht hin
-                                                           , selection="keep")
-
+#find all doppelnennung in a corpus
+doppelnennung <- str_match_all(taz_corpus,"([A-Z][a-z]* und [A-Z][a-z]*(innen|in))|([A-Z][a-z]*(innen|in) und [A-Z][a-z]*)")
+#the regex should have a word boundary to exclude cases like "hallo und diskrimnin", but somehow i do not manage
 
 #no dtm should be created because for the log likelihood, target und reference corpora will 
 # not have many intersections. However, one could use just the sums of reg exes found for both
 #and calculate loklikelyhood with this
 
-sum_filter_3sum <-(filtered_3grams)
+num_doppelnennung <- str_count(taz_corpus,"([A-Z][a-z]* und [A-Z][a-z]*(innen|in))|([A-Z][a-z]*(innen|in) und [A-Z][a-z]*)")
+filter3sum <-sum(num_doppelnennung)
 
 
+#notes
 
-
-
-
-
-
-
-
-
-
-
-
+#OR#create 3-grams first
+#tokens_3gram <- tokens_ngrams(toks, n =3)
+#DTM <- dfm(tokens_3gram)
+#Do not Lowercase (?maybe already from the beginning)
+#filter 3grams for regex:
+#filtered_3grams <- kwic(tokens_3gram, pattern = "[a-z]und*")
+#sum_filter_3sum <-(filtered_3grams)
 
 
 #----------------------------4: filter dtm through a dictionary (does not work from the logic)
