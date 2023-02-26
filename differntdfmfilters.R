@@ -111,7 +111,7 @@ filter2 <- function (NewTokens){
   #filter a DTM by the regexlist
   dtm_filtered_2<-dfm_select(filter2_dtm,
                              pattern = c("*_in","*_innen",":_in",":_innen", "(_in_)", "(_innen_)", 
-                                         "·_in", "·_innen", "__in", "__innen", "/_in", "/_innen", "-_in", "-_innen"),
+                                         "·_in", "·_innen", "__in", "__innen", "/_in", "/_innen", "-_in", "-_innen", "myplaceholder"),
                              selection ="keep")#again, something does not work with the reg exes
   
 
@@ -131,7 +131,7 @@ filter2 <- function (NewTokens){
 filter3 <- function (corpus){
   
   #find all doppelnennung in a corpus
-  doppelnennung <- str_match_all(corpus,"([A-Z][a-z]* und [A-Z][a-z]*(innen|in))|([A-Z][a-z]*(innen|in) und [A-Z][a-z]*)")
+  doppelnennung <- str_match_all(corpus,"\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b")
   #the regex should have a word boundary to exclude cases like "hallo und diskrimnin", but somehow i do not manage
   
   print(doppelnennung)
@@ -139,7 +139,7 @@ filter3 <- function (corpus){
   # not have many intersections. However, one could use just the sums of reg exes found for both
   #and calculate loklikelyhood with this
   
-  num_doppelnennung <- str_count(corpus,"([A-Z][a-z]* und [A-Z][a-z]*(innen|in))|([A-Z][a-z]*(innen|in) und [A-Z][a-z]*)")
+  num_doppelnennung <- str_count(corpus,"\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b")
   
   filter3sum <-sum(num_doppelnennung)
   
