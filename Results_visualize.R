@@ -104,12 +104,7 @@ print(dfll3)
 
 
 #------------------------------filter 1 Visualisieurng: noch offen was wir damit machen wollen
-#print(termCountsComparison1/sumalterms_comparison*100000)
-#print(termCountsfaz1/sumalterms_faz*100000)
-#print(termCountstaz1/sumalterms_taz*100000)
-#print(termCountsspiegel1/sumalterms_spiegel*100000)
-#print(termCountssueddeutsche1/sumalterms_sueddeutsche*100000)
-#print(termCountswelt1/sumalterms_welt*100000)
+
 
 #kurze qualitative analyse: welche signifikanten wörter machen sinn?
 
@@ -148,5 +143,22 @@ wordcloud2(df_welt1, shuffle = F, size = 0.2)
 df_sueddeutsche1 <- data.frame(word = names(filtered_vec_sueddeutsche), count = filtered_vec_sueddeutsche, row.names = NULL)
 wordcloud2(top50_df, shuffle = F, size = 0.2)
 
+#jetzt noch die wordcounts nach den geählten wörtertn filtern
+filtered_termCounttaz1 <- termCountstaz1[c("besuchsperson", "studierende", "moderation", "teilnahmeliste", "forschende", "lesende", "beratende", "backende", "teilnehmende", "redeliste", "abteilungsleitung")] #ohne menschen, ohne Intendanz
+
+filtered_termCountfaz1 <- termCountsfaz1[c("studierende", "führungskraft", "gesetzgebende", "versuchspersonen", "redepult", "schreibende")]#ohne person
+
+filtered_termCountspiegel1 <- termCountsspiegel1[c("erzählende", "teamleitung")]#ohne menschen, ohne leute, ohne redaktion
+
+filtered_termCountwelt1 <- termCountswelt1[c("vorsitzende", "studierende", "lernende", "mitglieder", "teilnehmende", "lesende","lehrende", "führungskraft", "teamleitung", "promovierende", "redepult", "hauptfigur")]#ohne "redaktion", "menschen",  "person", "kundschaft", 
+
+filtered_terCountsueddeutsche1 <- termCountssueddeutsche1[c("mitarbeitende", "fachkraft", "kunstschaffende",  "moderation", "beteiligte", "vorsitzende", "lernende")]#ohne "person", "klientel","freiwillige", , "abgeordnete"
+
+#hier also die signifikanten und relevanten terms der jeweiligen zeitungen, geteilt durch die gesamttermzahl, *1000
+faz1<-filtered_termCountfaz1/sumalterms_faz*100000
+taz1<-filtered_termCounttaz1/sumalterms_taz*100000
+spiegel1<-filtered_termCountspiegel1/sumalterms_spiegel*100000
+sueddeustche1<-filtered_terCountsueddeutsche1/sumalterms_sueddeutsche*100000
+welt1<-filtered_termCountwelt1/sumalterms_welt*100000
 
 
