@@ -17,6 +17,7 @@ refernce_corpus <- corpus(reference_corpus)
 # Preprocessing of the corpus (tokensization)
 reference_tokens <- reference_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+  #tokens_replace(pattern= "[A-Z][a-z]*(Innen|In)\\b", replacement="myplaceholder",valuetype="regex")%>%#funktioniert noch nicht, weil das replaced auch words mit lowercased i. also auch Schülerinnen z.B
   tokens_tolower()
 #create DTM
 reference_DTM <- dfm(reference_tokens)
@@ -35,12 +36,13 @@ termCountsComparison3<-referencefilter3
 
 #----------#TAZ
 #----#preprocessing
-taz_subset <- read.csv("taz_subset (1).csv")
+taz_subset <- read.csv("taz_subset (2).csv")
 # create corpus
 taz_corpus <- corpus(taz_subset$body, docnames = taz_subset$X)
 # Preprocessing of the corpus (tokensization)
 taz_tokens <- taz_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+  #tokens_replace(pattern= "[A-Z][a-z]*(Innen|In)\\b", replacement="myplaceholder",valuetype="regex")%>%
   tokens_tolower()
 ####!!tokens to lower makes it impoosible to find regexes charcterised by Capital letters, 
 # Create DTM 
@@ -65,13 +67,14 @@ tazll3<-calculateLogLikelihood2(termCountstaz3, termCountsComparison3, sumalterm
 
 #----------#FAZ
 #preprocessing
-faz_subset <- read.csv("faz_subset (2).csv")
+faz_subset <- read.csv("faz_subset (3).csv")
 
 # create corpus
 faz_corpus <- corpus(faz_subset$body, docnames = faz_subset$X)
 # Preprocessing of the corpus (tokensization)
 faz_tokens <- faz_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+  #tokens_replace(pattern= "[A-Z][a-z]*(Innen|In)\\b", replacement="myplaceholder",valuetype="regex")%>%
   tokens_tolower()
 ####!!tokens to lower makes it impoosible to find regexes charcterised by Capital letters, 
 # Create DTM 
@@ -95,12 +98,15 @@ fazll3<-calculateLogLikelihood2(termCountsfaz3, termCountsComparison3, sumalterm
 
 #----------#sueddeutsche
 #preprocessing
-sueddeutsche_subset <- read.csv("sueddeutsche_subset (1).csv")
+sueddeutsche_subset <- read.csv("sueddeutsche_subset (2).csv")
 # create corpus
 sueddeutsche_corpus <- corpus(sueddeutsche_subset$body, docnames = sueddeutsche_subset$X)
-# Preprocessing of the corpus (tokensization)
+sueddeutsche_corpus[[59]]
+  
+  # Preprocessing of the corpus (tokensization)
 sueddeutsche_tokens <- sueddeutsche_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+  #tokens_replace(pattern= "[A-Z][a-z]*(Innen|In)\\b", replacement="myplaceholder",valuetype="regex")%>%
   tokens_tolower()
 ####!!tokens to lower makes it impoosible to find regexes charcterised by Capital letters, 
 # Create DTM 
@@ -125,13 +131,14 @@ sueddeutschell3<-calculateLogLikelihood2(termCountssueddeutsche3, termCountsComp
 
 #---------#spiegel
 #preprocessing
-spiegel_subset <- read.csv("spiegel_subset (1).csv")
+spiegel_subset <- read.csv("spiegel_subset (2).csv")
 
 # create corpus
 spiegel_corpus <- corpus(spiegel_subset$body, docnames = spiegel_subset$X)
 # Preprocessing of the corpus (tokensization)
 spiegel_tokens <- spiegel_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+  #tokens_replace(pattern= "[A-Z][a-z]*(Innen|In)\\b", replacement="myplaceholder",valuetype="regex")%>%
   tokens_tolower()
 ####!!tokens to lower makes it impoosible to find regexes charcterised by Capital letters, 
 # Create DTM 
@@ -156,13 +163,14 @@ spiegelll3<-calculateLogLikelihood2(termCountsspiegel3, termCountsComparison3, s
 
 #---------#welt
 #preprocessing
-welt_subset <- read.csv("welt_subset_paywallcleaned (1).csv")#falsches format
+welt_subset <- read.csv("welt_subset (2).csv")#falsches format
 
 # create corpus
 welt_corpus <- corpus(welt_subset$body, docnames = welt_subset$X)
 # Preprocessing of the corpus (tokensization)
 welt_tokens <- welt_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+  #tokens_replace(pattern= "[A-Z][a-z]*(Innen|In)\\b", replacement="myplaceholder",valuetype="regex")%>%
   tokens_tolower()
 ####!!tokens to lower makes it impoosible to find regexes charcterised by Capital letters, 
 # Create DTM 
@@ -186,12 +194,6 @@ weltll3<-calculateLogLikelihood2(termCountswelt3, termCountsComparison3, sumalte
 
 
 
-
-print(fazll2)
-print(tazll2)
-print(spiegelll2)
-print(sueddeutscheLL2)
-print(weltll2)
 
 
 
