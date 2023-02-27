@@ -1,18 +1,14 @@
 # Load the necessary libraries
 library(tidyverse)
 
-# Define the search pattern for title, url, description and keywords
-# search_pattern <- "Gendern|Gendersprache|Gender Sprache|Gender-Sprache|gendergerechte Sprache|gender-gerechte Sprache|
-# gendersensible Sprache|gender-sensible Sprache|genderneutrale Sprache|gender-neutrale Sprache|
-# geschlechtergerechte Sprache|geschlechter-gerechte Sprache|geschlechtersensible Sprache|geschlechter-sensible Sprache|
-# geschlechterneutrale Sprache|geschlechter-neutrale Sprache|generisches Maskulinum|generisches Femininum|Gender-Stern|
-# Genderstern|Gender-Sternchen|Gendersternchen|grammatisches Geschlecht|Genderlinguistik|Gender-Linguistik|
-# gender-inklusive Sprache|gender inklusive Sprache|genderinklusive Sprache|geschlechterinklusive Sprache|
-# geschlechter-inklusive Sprache|geschlechter inlusive Sprache|feministische Sprache|geschlechtsspezifische Sprache|
-# geschlechterspezifische Sprache|geschlechts-spezifische Sprache|geschlechter-spezifische Sprache|sexistische Sprache|
-# sexistischer Sprachgebrauch|gendert|genderte|genderten|gegendert|gegenderte|gendernde|gendernd"
+#-------------------------import the full datasets
+faz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\faz_full.csv", fileEncoding = "UTF-8")
+spiegel_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\spiegel_full.csv", fileEncoding = "UTF-8")
+sueddeutsche_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\sueddeutsche_full.csv", fileEncoding = "UTF-8")
+taz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\taz_full.csv", fileEncoding = "UTF-8")
+welt_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\welt_full.csv")
 
-# aktuelles search pattern
+# define search pattern
 search_pattern <- "Gendern|Gendersprache|Gender (Sprache|Sprachgebrauch)|Gender-(Sprache|Sprachgebrauch)|
 gendergerecht(:?e|er|en|ere) (Sprache|Sprachgebrauch)|gender-gerecht(:?e|er|en|ere) (Sprache|Sprachgebrauch)|
 gendersensibl(:?e|er|en|ere) (Sprache|Sprachgebrauch)|gender-sensibl(:?e|er|en|ere) (Sprache|Sprachgebrauch)|
@@ -32,14 +28,7 @@ Gegendert(:?e|r|n) (Sprache|Sprachgebrauch)|Gender-Gap|gendert|Gender Gap|Gegend
 Binnen-I|Binnen I|Gender:Doppelpunkt|Gender*Stern|Gender_Gap|Gender-Doppelpunkt|Gender Doppelpunkt|
 .*(Sprache|Sprachgebrauch)+.*(Gender).*|.*(Gender)+.*(Sprache|Sprachgebrauch).*"
 
-#-------------------------import the full datasets
-faz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\faz_full.csv", fileEncoding = "UTF-8")
-spiegel_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\spiegel_full.csv", fileEncoding = "UTF-8")
-sueddeutsche_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\sueddeutsche_full.csv", fileEncoding = "UTF-8")
-taz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\taz_full.csv", fileEncoding = "UTF-8")
-welt_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\welt_full.csv")
-
-# Subset the dataframes to only include rows where the search pattern appears in the columns
+# Subset the dataframes to only include rows where the search pattern appears in the columns "title, url, keywords, description"
 faz_subset_gender <- faz_full[apply(faz_full[, c("title", "url", "keywords","description")], 
                                      1, function(x) any(grepl(search_pattern, x, ignore.case = T))), ]
 spiegel_subset_gender <- spiegel_full[apply(spiegel_full[, c("title", "url", "keywords","description")], 
@@ -57,7 +46,15 @@ spiegel_subset <- subset(spiegel_subset_gender, paywall == 0)
 sueddeutsche_subset <- subset(sueddeutsche_subset_gender, paywall == 0)
 welt_subset <- subset(welt_subset_gender, paywall == 0)
 
-# delete "Leserbriefe" from Süddeutsche Subset 
+# delete rows that contain "NA" in the body
+faz_subset <- faz_subset[complete.cases(faz_subset$body), ]
+spiegel_subset <- spiegel_subset[complete.cases(spiegel_subset$body), ]
+sueddeutsche_subset <- sueddeutsche_subset[complete.cases(sueddeutsche_subset$body), ]
+sueddeutsche_subset <- sueddeutsche_subset[complete.cases(sueddeutsche_subset$title), ] #or in the title
+taz_subset <- taz_subset[complete.cases(taz_subset$body), ]
+welt_subset <- welt_subset[complete.cases(welt_subset$body), ]
+
+# delete "Leserbriefe" from Süddeutsche Subset because they are not articles
 sueddeutsche_subset <- sueddeutsche_subset[!grepl("Leserbriefe", sueddeutsche_subset$keywords),]
 
 # transform unicode characters in FAZ Subset 
@@ -79,7 +76,7 @@ unicode_specialcharacters <- c("<U\\+002D>" = "-", "<U\\+0020>" = " ", "<U\\+002
                                "<U\\+02BC>" = "ʼ", "<U\\+2018>" = "‘", "<U\\+00A7>" = "§",
                                "<U\\+20AC>" = "€")
 
-### manually replace all German Unicode characters and special characters
+### manually replace all German unicode characters and special characters from other languages
 faz_subset[] <- lapply(faz_subset, function(x) {
   for (key in names(unicode_specialcharacters)) {
     x <- gsub(key, unicode_specialcharacters[[key]], x)
@@ -103,15 +100,19 @@ faz_subset[] <- lapply(faz_subset, function(x) {
   return(x)
 })
 
-# delete rows from Welt Subset which contain the gibberish language
+# delete rows from Welt Subset which contain the gibberish language (only articles with a paywall contain this gibberish language)
 welt_subset <- welt_subset[!grepl("uuu |elu |vnlpe ", welt_subset$body),]
 
-# delete rows that contain "NA" in the body
-faz_subset <- faz_subset[complete.cases(faz_subset$body), ]
-spiegel_subset <- spiegel_subset[complete.cases(spiegel_subset$body), ]
-sueddeutsche_subset <- sueddeutsche_subset[complete.cases(sueddeutsche_subset$body), ]
-taz_subset <- taz_subset[complete.cases(taz_subset$body), ]
-welt_subset <- welt_subset[complete.cases(welt_subset$body), ]
+# SZ has repeated sentences in body, if there's a paywall. you have to manually remove these articles
+sueddeutsche_subset <- sueddeutsche_subset[-59,] #article 59 repeats sentences in body due to paywall
+sueddeutsche_subset <- sueddeutsche_subset_test[-27,]
+
+# delete duplicated rows
+faz_subset <- faz_subset[!duplicated(faz_subset),]
+spiegel_subset <- spiegel_subset[!duplicated(spiegel_subset),]
+sueddeutsche_subset <- sueddeutsche_subset[!duplicated(sueddeutsche_subset),]
+taz_subset <- taz_subset[!duplicated(taz_subset),]
+welt_subset <- welt_subset[!duplicated(welt_subset),]
 
 # put subsets into list
 list_subsets <- list(faz_subset, spiegel_subset, sueddeutsche_subset, taz_subset, welt_subset)

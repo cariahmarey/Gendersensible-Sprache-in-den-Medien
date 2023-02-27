@@ -1,7 +1,7 @@
 options(stringsAsFactors = FALSE)
+# load necessary libraries
 library(quanteda)
 library(stringr)
-
 
 #------------------implementation of the scripts
 
@@ -36,12 +36,8 @@ termCountsComparison3<-referencefilter3
 
 #----------#TAZ
 #----#preprocessing
-<<<<<<< Updated upstream
-taz_subset <- read.csv("taz_subset (2).csv")
-=======
-taz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv")
+taz_subset <- read.csv("taz_subset.csv")
 
->>>>>>> Stashed changes
 # create corpus
 taz_corpus <- corpus(taz_subset$body, docnames = taz_subset$X)
 # Preprocessing of the corpus (tokensization)
@@ -72,7 +68,7 @@ tazll3<-calculateLogLikelihood2(termCountstaz3, termCountsComparison3, sumalterm
 
 #----------#FAZ
 #preprocessing
-faz_subset <- read.csv("faz_subset (3).csv")
+faz_subset <- read.csv("faz_subset.csv")
 
 # create corpus
 faz_corpus <- corpus(faz_subset$body, docnames = faz_subset$X)
@@ -103,7 +99,7 @@ fazll3<-calculateLogLikelihood2(termCountsfaz3, termCountsComparison3, sumalterm
 
 #----------#sueddeutsche
 #preprocessing
-sueddeutsche_subset <- read.csv("sueddeutsche_subset (2).csv")
+sueddeutsche_subset <- read.csv("sueddeutsche_subset.csv")
 # create corpus
 sueddeutsche_corpus <- corpus(sueddeutsche_subset$body, docnames = sueddeutsche_subset$X)
 sueddeutsche_corpus[[59]]
@@ -136,7 +132,7 @@ sueddeutschell3<-calculateLogLikelihood2(termCountssueddeutsche3, termCountsComp
 
 #---------#spiegel
 #preprocessing
-spiegel_subset <- read.csv("spiegel_subset (2).csv")
+spiegel_subset <- read.csv("spiegel_subset.csv")
 
 # create corpus
 spiegel_corpus <- corpus(spiegel_subset$body, docnames = spiegel_subset$X)
@@ -200,14 +196,6 @@ weltll3<-calculateLogLikelihood2(termCountswelt3, termCountsComparison3, sumalte
 
 
 
-<<<<<<< Updated upstream
-=======
-print(fazll2)
-print(tazll3)
-print(spiegelll2)
-print(sueddeutscheLL2)
-print(weltll2)
 
->>>>>>> Stashed changes
 
 

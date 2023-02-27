@@ -1,5 +1,5 @@
 options(stringsAsFactors = F)
-
+# load necessary libraries
 library(webdriver)
 require(webdriver)
 install_phantomjs()
@@ -108,14 +108,10 @@ gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove duplicates
 gendered_words_splitted <- gendered_words_splitted[!duplicated(gendered_words_splitted),]
 gendered_words_splitted <- data.frame(gendered_words_splitted) #1572 rows
+# remove empty rows
+gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted == "", 1, all),]
+gendered_words_splitted <- data.frame(gendered_words_splitted)
 
-# define regexes for gendered words
-regex_gendered_words <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)", 
-                          "·in", "·innen", "\\\\_in", "\\\\_innen", "\\/in", "\\/innen", "\\\\/-in", "\\\\/-innen", 
-                          "[A-Z][a-z]+(In|Innen)","\\[A-Z][a-z]+*", "[A-Z][a-z]+ und +[A-Z][a-z]+[in|innen]","[A-Z][a-z]+[in|innen]+ und +[A-Z][a-z]")
-
-# Add new rows from list
-gendered_words_splitted <- rbind(gendered_words_splitted, data.frame(gendered_words_splitted = unlist(regex_gendered_words)))
 
 # export csv 
 write.csv(gendered_words_splitted, "gendered_words_splitted.csv")
