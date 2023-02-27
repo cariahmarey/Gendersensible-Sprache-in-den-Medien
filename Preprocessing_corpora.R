@@ -10,7 +10,7 @@ library(quanteda)
 
 #load target data (taz)
 
-taz_subset <- read.csv("taz_subset (1).csv")
+taz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv")
 
 # create corpus
 taz_corpus <- corpus(taz_subset$body, docnames = taz_subset$X)
@@ -30,9 +30,9 @@ taz_DTM <- taz_tokens %>%
 #----------------------------- Reference Data (wortschatz Leipzig
 
 #read in data
-comparison_text2020 <- readLines("./dataset_niekler/deu_news_2020_30K-sentences.txt")
-comparison_text2021 <- read_lines("./dataset_niekler/deu_news_2021_30K-sentences.txt")
-comparison_text2022 <- read_lines("./dataset_niekler/deu_news_2022_30K-sentences.txt")
+comparison_text2020 <- readLines("deu_news_2020_30K-sentences.txt")
+comparison_text2021 <- readLines("deu_news_2021_30K-sentences.txt")
+comparison_text2022 <- readLines("deu_news_2022_30K-sentences.txt")
 
 # create corpus
 

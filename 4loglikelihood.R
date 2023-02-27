@@ -84,9 +84,7 @@ calculateLogLikelihood <- function(termCountsTarget, termCountsComparison, patte
   return(logLikelihood)
 }
 
-
 #---------------------test out
-
 
 termCountsTarget <- term_in_docs_taz
 termCountsComparison <- term_in_docs_sueddeutsche
@@ -96,3 +94,6 @@ logLikelihood <- calculateLogLikelihood(termCountsTarget,
                                         pattern = "[a-z]on", 
                                         minSignificance = 6.63)
 print(logLikelihood)
+
+
+

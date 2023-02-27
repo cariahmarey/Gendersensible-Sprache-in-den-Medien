@@ -8,16 +8,12 @@ library(stringr)
 
 #this script is used to filter the dtm's by differnt forms of gendered language
 #1. the first part filters a dtm, for a list of words of gendered language created by
-#the input of gender.de and richtiggendern
-#2. the second part of the scrpit filters the dtm for a list of reg ex (*innen etc)
+#the input of gender.de and richtiggendern.de
+#2. the second part of the script filters the dtm for a list of reg ex (*innen etc)
 #3. the third part of the script filters for the usage of Doppelnennung of female and male forms
-#(Leher und Lehrerinnen)
-
-
+#(Lehrer und Lehrerinnen)
 
 #--------------------1: filter dtm for list of gendered words:
-
-
 
 #function that filters a given DTM through filter 1 and returns the reduced DTM
 
@@ -32,8 +28,6 @@ filter1 <- function (DTM){
   dtm_filtered_1<-dfm_select(DTM,
                              pattern = genderwordlist,
                              selection ="keep",padding = FALSE)
-  
-
   
   return(dtm_filtered_1)
 }
@@ -102,7 +96,6 @@ filter2 <- function (NewTokens){
   
   #apply these steps to the tokens of the corpurs
  
-
   #create dtm out of the new tokens
   
   filter2_dtm <- dfm(NewTokens)
@@ -114,14 +107,8 @@ filter2 <- function (NewTokens){
                                          "·_in", "·_innen", "__in", "__innen", "/_in", "/_innen", "-_in", "-_innen", "myplaceholder"),
                              selection ="keep")#again, something does not work with the reg exes
   
-
-  
- 
-  
   return(dtm_filtered_2)
 }
-
-
 
 
 #------------------------------3: Filter dtm by doppelnennung
@@ -172,8 +159,3 @@ filter3 <- function (corpus){
                                     #filter3=       ))
 
 #all_filtered_dtm <- dfm_lookup(taz_DTM,full_filter_dtm,nomatch = "unmatched")
-
-
-
-
-
