@@ -8,12 +8,12 @@ library(stringr)
 #---------#Referencecoprora -(refernce corpora does not show _?, so it does not exist)
 #----#preprocessing
 #read in data
-comparison_text2020 <- readLines("./dataset_niekler/deu_news_2020_30K-sentences.txt")
-comparison_text2021 <- readLines("./dataset_niekler/deu_news_2021_30K-sentences.txt")
-comparison_text2022 <- readLines("./dataset_niekler/deu_news_2022_30K-sentences.txt")
+comparison_text2020 <- readLines("deu_news_2020_30K-sentences.txt")
+comparison_text2021 <- readLines("deu_news_2021_30K-sentences.txt")
+comparison_text2022 <- readLines("deu_news_2022_30K-sentences.txt")
 # create corpus
 reference_corpus <- c(comparison_text2020,comparison_text2021,comparison_text2022)
-refernce_corpus <- corpus(reference_corpus)
+reference_corpus <- corpus(reference_corpus)
 # Preprocessing of the corpus (tokensization)
 reference_tokens <- reference_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
@@ -36,7 +36,12 @@ termCountsComparison3<-referencefilter3
 
 #----------#TAZ
 #----#preprocessing
+<<<<<<< Updated upstream
 taz_subset <- read.csv("taz_subset (2).csv")
+=======
+taz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv")
+
+>>>>>>> Stashed changes
 # create corpus
 taz_corpus <- corpus(taz_subset$body, docnames = taz_subset$X)
 # Preprocessing of the corpus (tokensization)
@@ -195,5 +200,14 @@ weltll3<-calculateLogLikelihood2(termCountswelt3, termCountsComparison3, sumalte
 
 
 
+<<<<<<< Updated upstream
+=======
+print(fazll2)
+print(tazll3)
+print(spiegelll2)
+print(sueddeutscheLL2)
+print(weltll2)
+
+>>>>>>> Stashed changes
 
 
