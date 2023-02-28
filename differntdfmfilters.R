@@ -2,25 +2,29 @@ options(stringsAsFactors = FALSE)
 library(quanteda)
 library(stringr)
 
-#Baustellen in diesem Skript: SchülerInnen wird nicht gefunden, wegen lowercasing the tokens, sowie frauen*
-#                             word boundaries bei doppelnennung sind nicht im reg ex, dadurch false positives
+#Baustellen in diesem Skript:-Filter 2; Genderform SchülerInnen wird noch nicht gefunden (als myplaceholder in filter 2, aber in der tokenisierung noch nicht ersetzt in implemntation.R, da es noch probleme mit dem replacement gibt)
+                            #-Filter 3; RegEx zu Doppelnennung ist noch unsauber, da nicht mit drinn ist, dass der Worststamm bei beiden Wörtern derselbe sein sollte
 
-
+#In diesem script:
 #this script is used to filter the dtm's by differnt forms of gendered language
 #1. the first part filters a dtm, for a list of words of gendered language created by
-#the input of gender.de and richtiggendern.de
-#2. the second part of the script filters the dtm for a list of reg ex (*innen etc)
+#the input of gender.de and richtiggendern
+#2. the second part of the scrpit filters the dtm for a list of reg ex (*innen etc)
 #3. the third part of the script filters for the usage of Doppelnennung of female and male forms
-#(Lehrer und Lehrerinnen)
+#(Leher und Lehrerinnen)
+
+
 
 #--------------------1: filter dtm for list of gendered words:
+
+
 
 #function that filters a given DTM through filter 1 and returns the reduced DTM
 
 filter1 <- function (DTM){
   
   #load gender list
-  genderworddoc<- read.csv("gendered_words_splitted.csv")
+  genderworddoc<- read.csv("gendered_words_splitted (1).csv")
   #create list of words
   genderwordlist<-c(genderworddoc[["gendered_words_splitted"]])
   
@@ -29,13 +33,16 @@ filter1 <- function (DTM){
                              pattern = genderwordlist,
                              selection ="keep",padding = FALSE)
   
+
+  
   return(dtm_filtered_1)
 }
 
-filter1(taz_DTM)
+
 
 
 #------------------------------2: Filter dtm by reg Ex list
+
 
 # in the tokenization the * symbol is put as a single token, 
 #: stays in the middle of the word, 
@@ -45,15 +52,6 @@ filter1(taz_DTM)
 #Capitalletters are lowercased
 
 #--> so we first have to adjust our Tokens in the Corpus:
-
-
-# Here is a sample Text to text how to do that
-#sample <- "hus_in Schulerin und Schuler schüler und leher my name is Schüler·innen Christina. 50 Sometimes Lehrer/in we get some weirdness
-#Hello my name is Michael:in, 
-#sometimes schmim(innen) we get some Sculer und Lehereinnen weird,and odd, results-- 50 I  want to hund und katin replace the 
-# 50s"
-#corpus<-corpus(sample)
-#toks<-tokens(corpus)
 
 
 adjusttokens_filter2 <- function(Tokens) {
@@ -84,7 +82,7 @@ adjusttokens_filter2 <- function(Tokens) {
   
   #now we only have to consider that the regex entails: _
   #/- schreibweise fällt raus, und wird zu - schreibweise
-  #Offen: take care of the I and Frauen* (lowercasing): "[A-Z][a-z]+(In|Innen)", "[A-Z][a-z]+*
+  
   
   
   return(adjustedtokens)
@@ -94,7 +92,6 @@ adjusttokens_filter2 <- function(Tokens) {
 
 filter2 <- function (NewTokens){
   
-  #apply these steps to the tokens of the corpurs
  
   #create dtm out of the new tokens
   
@@ -105,10 +102,16 @@ filter2 <- function (NewTokens){
   dtm_filtered_2<-dfm_select(filter2_dtm,
                              pattern = c("*_in","*_innen",":_in",":_innen", "(_in_)", "(_innen_)", 
                                          "·_in", "·_innen", "__in", "__innen", "/_in", "/_innen", "-_in", "-_innen", "myplaceholder"),
-                             selection ="keep")#again, something does not work with the reg exes
+                             selection ="keep")#myplaceholder identifieziert Binnen I's
+  
+
+  
+ 
   
   return(dtm_filtered_2)
 }
+
+
 
 
 #------------------------------3: Filter dtm by doppelnennung
@@ -118,15 +121,15 @@ filter2 <- function (NewTokens){
 filter3 <- function (corpus){
   
   #find all doppelnennung in a corpus
-  doppelnennung <- str_match_all(corpus,"\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b")
-  #the regex should have a word boundary to exclude cases like "hallo und diskrimnin", but somehow i do not manage
+  doppelnennung <- str_match_all(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
   
-  print(doppelnennung)
+  print(doppelnennung)# der kann raus am ende, habe ich nur zur Kontrolle eingebaut
+  
   #no dtm should be created because for the log likelihood, target und reference corpora will 
   # not have many intersections. However, one could use just the sums of reg exes found for both
   #and calculate loklikelyhood with this
   
-  num_doppelnennung <- str_count(corpus,"\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b")
+  num_doppelnennung <- str_count(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
   
   filter3sum <-sum(num_doppelnennung)
   
@@ -139,23 +142,3 @@ filter3 <- function (corpus){
 }
 
 
-
-#notes
-
-#OR#create 3-grams first
-#tokens_3gram <- tokens_ngrams(toks, n =3)
-#DTM <- dfm(tokens_3gram)
-#Do not Lowercase (?maybe already from the beginning)
-#filter 3grams for regex:
-#filtered_3grams <- kwic(tokens_3gram, pattern = "[a-z]und*")
-#sum_filter_3sum <-(filtered_3grams)
-
-
-#----------------------------4: filter dtm through a dictionary (does not work from the logic)
-
-
-#full_filter_dtm <- dictionary(list(filter1=c("gendern*|Gender*"),
-                                    #filter2 =c("in"),
-                                    #filter3=       ))
-
-#all_filtered_dtm <- dfm_lookup(taz_DTM,full_filter_dtm,nomatch = "unmatched")
