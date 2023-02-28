@@ -1,19 +1,22 @@
 options(stringsAsFactors = FALSE)
-# load necessary libraries
 library(quanteda)
 library(stringr)
 
-#------------------implementation of the scripts
+
+#In diesem Script: implementation of the scripts differentdfmfilter.R 
+#und logLikelihood.R auf die Subsets, samt preprocessing der Corpora
+
+
 
 #---------#Referencecoprora -(refernce corpora does not show _?, so it does not exist)
 #----#preprocessing
 #read in data
-comparison_text2020 <- readLines("deu_news_2020_30K-sentences.txt")
-comparison_text2021 <- readLines("deu_news_2021_30K-sentences.txt")
-comparison_text2022 <- readLines("deu_news_2022_30K-sentences.txt")
+comparison_text2020 <- readLines("./dataset_niekler/deu_news_2020_30K-sentences.txt")
+comparison_text2021 <- readLines("./dataset_niekler/deu_news_2021_30K-sentences.txt")
+comparison_text2022 <- readLines("./dataset_niekler/deu_news_2022_30K-sentences.txt")
 # create corpus
 reference_corpus <- c(comparison_text2020,comparison_text2021,comparison_text2022)
-reference_corpus <- corpus(reference_corpus)
+refernce_corpus <- corpus(reference_corpus)
 # Preprocessing of the corpus (tokensization)
 reference_tokens <- reference_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
@@ -21,14 +24,14 @@ reference_tokens <- reference_corpus %>%
   tokens_tolower()
 #create DTM
 reference_DTM <- dfm(reference_tokens)
-#----#filter
+#----#filter for the differnt dtms (see differentdfmfilters.R)
 referencefilter1<-filter1(reference_DTM)
-reference_newtokens <- adjusttokens_filter2(reference_tokens)
+reference_newtokens <- adjusttokens_filter2(reference_tokens)#to adjust the tokens for filter 2
 referencefilter2 <-filter2(reference_newtokens)
 referencefilter3 <-filter3(reference_corpus)
 #----#Loglikelihood
-#preparation
-sumalterms_comparison <-sum(colSums(reference_DTM))#to calculate d
+#preparation: _sum up counts for each term
+sumalterms_comparison <-sum(colSums(reference_DTM))#to calculate d in the Loglikelidood.R
 termCountsComparison1<- colSums(referencefilter1)
 termCountsComparison2<- colSums(referencefilter2)
 termCountsComparison3<-referencefilter3
@@ -36,8 +39,7 @@ termCountsComparison3<-referencefilter3
 
 #----------#TAZ
 #----#preprocessing
-taz_subset <- read.csv("taz_subset.csv")
-
+taz_subset <- read.csv("taz_subset (3).csv")
 # create corpus
 taz_corpus <- corpus(taz_subset$body, docnames = taz_subset$X)
 # Preprocessing of the corpus (tokensization)
@@ -60,15 +62,15 @@ sumalterms_taz <-sum(colSums(taz_DTM))#to calculate c
 termCountstaz1<- colSums(tazfilter1)
 termCountstaz2<- colSums(tazfilter2)
 termCountstaz3<-tazfilter3
-#test#
-tazll1<-calculateLogLikelihood2(termCountstaz1, termCountsComparison1, sumalterms_comparison, sumalterms_taz, minSignificance = 6.63)
-tazll2<-calculateLogLikelihood2(termCountstaz2, termCountsComparison2, sumalterms_comparison, sumalterms_taz, minSignificance = 6.63)
-tazll3<-calculateLogLikelihood2(termCountstaz3, termCountsComparison3, sumalterms_comparison, sumalterms_taz, minSignificance = 6.63)
+#test (see Loklikelihood.R)
+tazll1<-calculateLogLikelihood(termCountstaz1, termCountsComparison1, sumalterms_comparison, sumalterms_taz, minSignificance = 6.63)
+tazll2<-calculateLogLikelihood(termCountstaz2, termCountsComparison2, sumalterms_comparison, sumalterms_taz, minSignificance = 6.63)
+tazll3<-calculateLogLikelihood(termCountstaz3, termCountsComparison3, sumalterms_comparison, sumalterms_taz, minSignificance = 6.63)
 
 
 #----------#FAZ
 #preprocessing
-faz_subset <- read.csv("faz_subset.csv")
+faz_subset <- read.csv("faz_subset (4).csv")
 
 # create corpus
 faz_corpus <- corpus(faz_subset$body, docnames = faz_subset$X)
@@ -93,46 +95,45 @@ termCountsfaz1<- colSums(fazfilter1)
 termCountsfaz2<- colSums(fazfilter2)
 termCountsfaz3<-fazfilter3
 #test
-fazll1<-calculateLogLikelihood2(termCountsfaz1, termCountsComparison1,sumalterms_comparison, sumalterms_faz, minSignificance = 6.63)
-fazll2<-calculateLogLikelihood2(termCountsfaz2, termCountsComparison2, sumalterms_comparison, sumalterms_faz, minSignificance = 6.63)
-fazll3<-calculateLogLikelihood2(termCountsfaz3, termCountsComparison3, sumalterms_comparison, sumalterms_faz, minSignificance = 6.63)
+fazll1<-calculateLogLikelihood(termCountsfaz1, termCountsComparison1,sumalterms_comparison, sumalterms_faz, minSignificance = 6.63)
+fazll2<-calculateLogLikelihood(termCountsfaz2, termCountsComparison2, sumalterms_comparison, sumalterms_faz, minSignificance = 6.63)
+fazll3<-calculateLogLikelihood(termCountsfaz3, termCountsComparison3, sumalterms_comparison, sumalterms_faz, minSignificance = 6.63)
 
-#----------#sueddeutsche
+#----------#sueddeutsche: immernoch Satzdopplungen überall. Check so: sueddeutsche_corpus[[6]]
 #preprocessing
-sueddeutsche_subset <- read.csv("sueddeutsche_subset.csv")
+#sueddeutsche_subset <- read.csv("sueddeutsche_subset (3).csv")
 # create corpus
-sueddeutsche_corpus <- corpus(sueddeutsche_subset$body, docnames = sueddeutsche_subset$X)
-sueddeutsche_corpus[[59]]
-  
+#sueddeutsche_corpus <- corpus(sueddeutsche_subset$body, docnames = sueddeutsche_subset$X)
+
   # Preprocessing of the corpus (tokensization)
-sueddeutsche_tokens <- sueddeutsche_corpus %>%
-  tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+#sueddeutsche_tokens <- sueddeutsche_corpus %>%
+#  tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
   #tokens_replace(pattern= "[A-Z][a-z]*(Innen|In)\\b", replacement="myplaceholder",valuetype="regex")%>%
-  tokens_tolower()
+#  tokens_tolower()
 ####!!tokens to lower makes it impoosible to find regexes charcterised by Capital letters, 
 # Create DTM 
-sueddeutsche_DTM <- sueddeutsche_tokens %>%
-  dfm()
+#sueddeutsche_DTM <- sueddeutsche_tokens %>%
+#  dfm()
 #---#filter
-sueddeutschefilter1<-filter1(sueddeutsche_DTM)
-sueddeutsche_newtokens <- adjusttokens_filter2(sueddeutsche_tokens)
-sueddeutschefilter2 <-filter2(sueddeutsche_newtokens)
-sueddeutschefilter3 <-filter3(sueddeutsche_corpus)
+#sueddeutschefilter1<-filter1(sueddeutsche_DTM)
+#sueddeutsche_newtokens <- adjusttokens_filter2(sueddeutsche_tokens)
+#sueddeutschefilter2 <-filter2(sueddeutsche_newtokens)
+#sueddeutschefilter3 <-filter3(sueddeutsche_corpus)
 #Loglikelihood
 #preparation
-sumalterms_sueddeutsche <-sum(colSums(sueddeutsche_DTM))#to calculate c
-termCountssueddeutsche1<- colSums(sueddeutschefilter1)
-termCountssueddeutsche2<- colSums(sueddeutschefilter2)
-termCountssueddeutsche3<-sueddeutschefilter3
+#sumalterms_sueddeutsche <-sum(colSums(sueddeutsche_DTM))#to calculate c
+#termCountssueddeutsche1<- colSums(sueddeutschefilter1)
+#termCountssueddeutsche2<- colSums(sueddeutschefilter2)
+#termCountssueddeutsche3<-sueddeutschefilter3
 #test#
-sueddeutschell1<-calculateLogLikelihood2(termCountssueddeutsche1, termCountsComparison1, sumalterms_comparison, sumalterms_sueddeutsche, minSignificance = 6.63)
-sueddeutschell2<-calculateLogLikelihood2(termCountssueddeutsche2, termCountsComparison2, sumalterms_comparison, sumalterms_sueddeutsche, minSignificance = 6.63)
-sueddeutschell3<-calculateLogLikelihood2(termCountssueddeutsche3, termCountsComparison3, sumalterms_comparison, sumalterms_sueddeutsche, minSignificance = 6.63)
+#sueddeutschell1<-calculateLogLikelihood(termCountssueddeutsche1, termCountsComparison1, sumalterms_comparison, sumalterms_sueddeutsche, minSignificance = 6.63)
+#sueddeutschell2<-calculateLogLikelihood(termCountssueddeutsche2, termCountsComparison2, sumalterms_comparison, sumalterms_sueddeutsche, minSignificance = 6.63)
+#sueddeutschell3<-calculateLogLikelihood(termCountssueddeutsche3, termCountsComparison3, sumalterms_comparison, sumalterms_sueddeutsche, minSignificance = 6.63)
 
 
 #---------#spiegel
 #preprocessing
-spiegel_subset <- read.csv("spiegel_subset.csv")
+spiegel_subset <- read.csv("spiegel_subset (3).csv")
 
 # create corpus
 spiegel_corpus <- corpus(spiegel_subset$body, docnames = spiegel_subset$X)
@@ -157,14 +158,14 @@ termCountsspiegel1<- colSums(spiegelfilter1)
 termCountsspiegel2<- colSums(spiegelfilter2)
 termCountsspiegel3<-spiegelfilter3
 #test#
-spiegelll1<-calculateLogLikelihood2(termCountsspiegel1, termCountsComparison1, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
-spiegelll2<-calculateLogLikelihood2(termCountsspiegel2, termCountsComparison2, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
-spiegelll3<-calculateLogLikelihood2(termCountsspiegel3, termCountsComparison3, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
+spiegelll1<-calculateLogLikelihood(termCountsspiegel1, termCountsComparison1, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
+spiegelll2<-calculateLogLikelihood(termCountsspiegel2, termCountsComparison2, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
+spiegelll3<-calculateLogLikelihood(termCountsspiegel3, termCountsComparison3, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
 
 
 #---------#welt
 #preprocessing
-welt_subset <- read.csv("welt_subset (2).csv")#falsches format
+welt_subset <- read.csv("welt_subset (3).csv")
 
 # create corpus
 welt_corpus <- corpus(welt_subset$body, docnames = welt_subset$X)
@@ -189,9 +190,10 @@ termCountswelt1<- colSums(weltfilter1)
 termCountswelt2<- colSums(weltfilter2)
 termCountswelt3<-weltfilter3
 #test#
-weltll1<-calculateLogLikelihood2(termCountswelt1, termCountsComparison1, sumalterms_comparison, sumalterms_welt, minSignificance = 6.63)
-weltll2<-calculateLogLikelihood2(termCountswelt2, termCountsComparison2, sumalterms_comparison, sumalterms_welt, minSignificance = 6.63)
-weltll3<-calculateLogLikelihood2(termCountswelt3, termCountsComparison3, sumalterms_comparison, sumalterms_welt, minSignificance = 6.63)
+weltll1<-calculateLogLikelihood(termCountswelt1, termCountsComparison1, sumalterms_comparison, sumalterms_welt, minSignificance = 6.63)
+weltll2<-calculateLogLikelihood(termCountswelt2, termCountsComparison2, sumalterms_comparison, sumalterms_welt, minSignificance = 6.63)
+weltll3<-calculateLogLikelihood(termCountswelt3, termCountsComparison3, sumalterms_comparison, sumalterms_welt, minSignificance = 6.63)
+
 
 
 
