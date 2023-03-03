@@ -97,15 +97,19 @@ filter2 <- function (NewTokens){
 filter3 <- function (corpus){
   
   #find all doppelnennung in a corpus
-  doppelnennung <- str_match_all(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
+  #doppelnennung <- str_match_all(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
+  # test:
+  doppelnennung <- str_match_all(corpus,"(\\b[A-Z][a-z]*in und [A-Z][a-z]*innen\\b)|(\\b[A-Z][a-z]*innen und [A-Z][a-z]*in\\b)")
   
-  print(doppelnennung)# der kann raus am ende, habe ich nur zur Kontrolle eingebaut
   
   #no dtm should be created because for the log likelihood, target und reference corpora will 
   # not have many intersections. However, one could use just the sums of reg exes found for both
   #and calculate loklikelyhood with this
   
-  num_doppelnennung <- str_count(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
+  #num_doppelnennung <- str_count(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
+  # test:
+  num_doppelnennung <- str_count(corpus,"(\\b[A-Z][a-z]*in und [A-Z][a-z]*innen\\b)|(\\b[A-Z][a-z]*innen und [A-Z][a-z]*in\\b)")
+  
   
   filter3sum <-sum(num_doppelnennung)
   
@@ -114,5 +118,4 @@ filter3 <- function (corpus){
   
   return(filter3)
 }
-
 

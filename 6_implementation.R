@@ -151,6 +151,7 @@ spiegelll1<-calculateLogLikelihood(termCountsspiegel1, termCountsComparison1, su
 spiegelll2<-calculateLogLikelihood(termCountsspiegel2, termCountsComparison2, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
 spiegelll3<-calculateLogLikelihood(termCountsspiegel3, termCountsComparison3, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
 
+spiegelll3
 
 #--------- welt
 #preprocessing
