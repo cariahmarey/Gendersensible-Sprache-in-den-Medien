@@ -5,7 +5,6 @@ options(stringsAsFactors = F)
 #-------------------------import the subset datasets
 faz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv", fileEncoding = "UTF-8")
 spiegel_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\spiegel_subset.csv", fileEncoding = "UTF-8")
-sueddeutsche_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\sueddeutsche_subset.csv", fileEncoding = "UTF-8")
 taz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv", fileEncoding = "UTF-8")
 welt_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\welt_subset.csv", fileEncoding = "UTF-8")
 
@@ -62,7 +61,7 @@ for (i in 1:length(list_subsets)) {
     assign(paste0("barchart_sueddeutsche"), counts_chart)
   }
   
-  else if (i == 4) {
+  else {
     # Create a bar chart with the counts of TRUE and FALSE in the "contains_regex" column
     counts_chart <- ggplot(data.frame(counts_table), aes(x = Var1, y = Freq)) +
       geom_bar(stat = "identity", fill = "#0072B2") +
@@ -72,16 +71,6 @@ for (i in 1:length(list_subsets)) {
     # assign name to the bar chart
     assign(paste0("barchart_taz"), counts_chart)
   }
-  
-  else {
-    # Create a bar chart with the counts of TRUE and FALSE in the "contains_regex" column
-    counts_chart <- ggplot(data.frame(counts_table), aes(x = Var1, y = Freq)) +
-      geom_bar(stat = "identity", fill = "#0072B2") +
-      labs(x = "Contains Regex", y = "Count") +
-      scale_x_discrete(labels = c("FALSE" = "No", "TRUE" = "Yes")) +
-      ggtitle("welt: Counts of Regular Expressions in Body Column")
-    # assign name to the bar chart
-    assign(paste0("barchart_welt"), counts_chart)
-  }
+
 }
 

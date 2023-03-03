@@ -9,9 +9,8 @@ pjs_instance <- run_phantomjs()
 pjs_session <- Session$new(port = pjs_instance$port)
 
 #----------- get gendered words for geschicktgendern.de
-
+# set URL
 url <- "https://geschicktgendern.de/"
-
 
 # load URL to phantomJS session
 pjs_session$go(url)
@@ -19,7 +18,7 @@ pjs_session$go(url)
 rendered_source <- pjs_session$getSource()
 # parse the dynamically rendered source code
 html_document <- read_html(rendered_source)
-
+# set text path
 text_path <- "//tbody[contains(@class, 'row-hover')]//td"
 
 title_text <- html_document %>%
@@ -82,36 +81,27 @@ gendered_words <- data.frame(gendered_words)
 gendered_words <- gendered_words[order(gendered_words$gendered_words),]
 gendered_words <- data.frame(gendered_words)
 
-#------------ clean the df of gendered words and add the regexes at the end
+#----------- clean the df of gendered words and add the regexes at the end
 
 library(stringr)
 library(splitstackshape)
 
 # separate strings at ";"
 gendered_words_splitted <- cSplit(gendered_words, "gendered_words", sep = ";", direction = "long")
-gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove rows that contain "[" or "]", because they don't contain genderneutral terms
 gendered_words_splitted <- gendered_words_splitted[!grepl("\\[|\\]", gendered_words_splitted$gendered_words),]
-gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove "..."
-gendered_words_splitted$gendered_words_splitted <- sub("\\...", "", gendered_words_splitted$gendered_words_splitted)
-gendered_words_splitted <- data.frame(gendered_words_splitted)
+gendered_words_splitted <- gendered_words_splitted[!grepl("\\...", gendered_words_splitted$gendered_words),]
 # remove rows that contain more than one string
 gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted, 1, function(x) any(lengths(strsplit(as.character(x), " ")) > 1)),]
-gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove rows where any cell starts with a lowercase character
 gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted, 1, function(x) any(grepl("^[[:lower:]]", as.character(x)))),]
-gendered_words_splitted <- data.frame(gendered_words_splitted)
 # remove rows which contain "*", "_" or "/" in between the word
-gendered_words_splitted <- gendered_words_splitted[!grepl("^[^*/_]*[*_/][^*/_]*$", gendered_words_splitted$gendered_words_splitted), ]
-gendered_words_splitted <- data.frame(gendered_words_splitted)
+gendered_words_splitted <- gendered_words_splitted[!grepl("^[^*/_]*[*_/][^*/_]*$", gendered_words_splitted$gendered_words), ]
 # remove duplicates
 gendered_words_splitted <- gendered_words_splitted[!duplicated(gendered_words_splitted),]
-gendered_words_splitted <- data.frame(gendered_words_splitted) #1572 rows
 # remove empty rows
-gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted == "", 1, all),]
-gendered_words_splitted <- data.frame(gendered_words_splitted)
-
+gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted == "", 1, all),] #1566 words
 
 # export csv 
 write.csv(gendered_words_splitted, "gendered_words_splitted.csv")

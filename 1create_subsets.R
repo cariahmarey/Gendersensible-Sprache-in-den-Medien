@@ -4,7 +4,6 @@ library(tidyverse)
 #-------------------------import the full datasets
 faz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\faz_full.csv", fileEncoding = "UTF-8")
 spiegel_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\spiegel_full.csv", fileEncoding = "UTF-8")
-sueddeutsche_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\sueddeutsche_full.csv", fileEncoding = "UTF-8")
 taz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\taz_full.csv", fileEncoding = "UTF-8")
 welt_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\welt_full.csv")
 
@@ -33,8 +32,6 @@ faz_subset_gender <- faz_full[apply(faz_full[, c("title", "url", "keywords","des
                                      1, function(x) any(grepl(search_pattern, x, ignore.case = T))), ]
 spiegel_subset_gender <- spiegel_full[apply(spiegel_full[, c("title", "url", "keywords","description")], 
                                     1, function(x) any(grepl(search_pattern, x, ignore.case = T))), ]
-sueddeutsche_subset_gender <- sueddeutsche_full[apply(sueddeutsche_full[, c("title", "url", "keywords","description")], 
-                                    1, function(x) any(grepl(search_pattern, x, ignore.case = T))), ]
 taz_subset_gender <- taz_full[apply(taz_full[, c("title", "url", "keywords","description")], 
                                     1, function(x) any(grepl(search_pattern, x, ignore.case = T))), ]
 welt_subset_gender <- welt_full[apply(welt_full[, c("title", "url", "keywords","description")], 
@@ -43,19 +40,13 @@ welt_subset_gender <- welt_full[apply(welt_full[, c("title", "url", "keywords","
 # create subsets without paywall (taz has no paywall)
 faz_subset <- subset(faz_subset_gender, paywall == 0)
 spiegel_subset <- subset(spiegel_subset_gender, paywall == 0)
-sueddeutsche_subset <- subset(sueddeutsche_subset_gender, paywall == 0)
 welt_subset <- subset(welt_subset_gender, paywall == 0)
 
 # delete rows that contain "NA" in the body
 faz_subset <- faz_subset[complete.cases(faz_subset$body), ]
 spiegel_subset <- spiegel_subset[complete.cases(spiegel_subset$body), ]
-sueddeutsche_subset <- sueddeutsche_subset[complete.cases(sueddeutsche_subset$body), ]
-sueddeutsche_subset <- sueddeutsche_subset[complete.cases(sueddeutsche_subset$title), ] #or in the title
 taz_subset <- taz_subset[complete.cases(taz_subset$body), ]
 welt_subset <- welt_subset[complete.cases(welt_subset$body), ]
-
-# delete "Leserbriefe" from Süddeutsche Subset because they are not articles
-sueddeutsche_subset <- sueddeutsche_subset[!grepl("Leserbriefe", sueddeutsche_subset$keywords),]
 
 # transform unicode characters in FAZ Subset 
 ### define a lookup table for all special characters and their corresponding characters
@@ -103,19 +94,14 @@ faz_subset[] <- lapply(faz_subset, function(x) {
 # delete rows from Welt Subset which contain the gibberish language (only articles with a paywall contain this gibberish language)
 welt_subset <- welt_subset[!grepl("uuu |elu |vnlpe ", welt_subset$body),]
 
-# SZ has repeated sentences in body, if there's a paywall. you have to manually remove these articles
-sueddeutsche_subset <- sueddeutsche_subset[-59,] #article 59 repeats sentences in body due to paywall
-sueddeutsche_subset <- sueddeutsche_subset_test[-27,]
-
 # delete duplicated rows
 faz_subset <- faz_subset[!duplicated(faz_subset),]
 spiegel_subset <- spiegel_subset[!duplicated(spiegel_subset),]
-sueddeutsche_subset <- sueddeutsche_subset[!duplicated(sueddeutsche_subset),]
 taz_subset <- taz_subset[!duplicated(taz_subset),]
 welt_subset <- welt_subset[!duplicated(welt_subset),]
 
 # put subsets into list
-list_subsets <- list(faz_subset, spiegel_subset, sueddeutsche_subset, taz_subset, welt_subset)
+list_subsets <- list(faz_subset, spiegel_subset, taz_subset, welt_subset)
 
 # remove rows where date<2020 and body=NA from subsets
 for (i in 1:length(list_subsets)) {
@@ -133,12 +119,9 @@ for (i in 1:length(list_subsets)) {
     assign(paste0("spiegel_subset"), df)
   }
   if (i == 3) {
-    assign(paste0("sueddeutsche_subset"), df)
-  }
-  if (i == 4) {
     assign(paste0("taz_subset"), df)
   }
-  if (i == 5) {
+  if (i == 4) {
     assign(paste0("welt_subset"), df)
   }
 }
@@ -146,7 +129,6 @@ for (i in 1:length(list_subsets)) {
 # export dataframes as csvs
 write.csv(faz_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv")
 write.csv(spiegel_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\spiegel_subset.csv")
-write.csv(sueddeutsche_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\sueddeutsche_subset.csv")
 write.csv(taz_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv")
 write.csv(welt_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\welt_subset.csv")
 
