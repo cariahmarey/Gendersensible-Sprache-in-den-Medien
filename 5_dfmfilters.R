@@ -99,8 +99,12 @@ filter3 <- function (corpus){
   #find all doppelnennung in a corpus
   #doppelnennung <- str_match_all(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
   # test:
-  doppelnennung <- str_match_all(corpus,"(\\b[A-Z][a-z]*in und [A-Z][a-z]*innen\\b)|(\\b[A-Z][a-z]*innen und [A-Z][a-z]*in\\b)")
+  #doppelnennung <- str_match_all(corpus,"\\b([a-zA-Zäöüß]+)\\b und \\b\\1in\\b|\\b([a-zA-Zäöüß]+)in\\b und \\b\\1\\b|
+  #                               \\b([a-zA-Zäöüß]+)\\b und \\b\\1innen\\b|\\b([a-zA-Zäöüß]+)innen\\b und \\b\\1\\b")
   
+  doppelnennung <- str_match_all(corpus,"\\b(([A-Z][a-zäöüß]*)([a-zäöüß]*)?) und (\\2(in|innen))\\b|\\b((([A-Z][a-zäöüß]*)(([a-zäöüß]*)?)))+(in|innen)\\b und \\b\\6([a-z]*)")
+  
+  print(doppelnennung)
   
   #no dtm should be created because for the log likelihood, target und reference corpora will 
   # not have many intersections. However, one could use just the sums of reg exes found for both
@@ -108,7 +112,7 @@ filter3 <- function (corpus){
   
   #num_doppelnennung <- str_count(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
   # test:
-  num_doppelnennung <- str_count(corpus,"(\\b[A-Z][a-z]*in und [A-Z][a-z]*innen\\b)|(\\b[A-Z][a-z]*innen und [A-Z][a-z]*in\\b)")
+  num_doppelnennung <- str_count(corpus,"\\b(([A-Z][a-zäöüß]*)([a-zäöüß]*)?) und (\\2(in|innen))\\b|\\b((([A-Z][a-zäöüß]*)(([a-zäöüß]*)?)))+(in|innen)\\b und \\b\\6([a-z]*)")
   
   
   filter3sum <-sum(num_doppelnennung)

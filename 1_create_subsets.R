@@ -126,6 +126,9 @@ for (i in 1:length(list_subsets)) {
   }
 }
 
+# put subsets into list
+list_subsets <- list(faz_subset, spiegel_subset, taz_subset, welt_subset)
+
 # export dataframes as csvs
 write.csv(faz_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv")
 write.csv(spiegel_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\spiegel_subset.csv")
