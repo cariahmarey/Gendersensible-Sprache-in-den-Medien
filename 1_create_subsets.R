@@ -103,12 +103,12 @@ welt_subset <- welt_subset[!duplicated(welt_subset),]
 # put subsets into list
 list_subsets <- list(faz_subset, spiegel_subset, taz_subset, welt_subset)
 
-# remove rows where date<2020 and body=NA from subsets
+# remove rows where date <2020 or >2022 and body=NA from subsets
 for (i in 1:length(list_subsets)) {
   df <- list_subsets[[i]]
   
   # delete rows where date < 2020
-  df <- subset(df, as.numeric(substr(date, 1, 4)) >= 2020)
+  df <- subset(df, as.numeric(substr(date, 1, 4)) %in% 2020:2022)
   # delete rows where body=NA
   df <- df[complete.cases(df$body), ]
   
