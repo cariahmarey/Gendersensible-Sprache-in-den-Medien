@@ -3,6 +3,7 @@ library(ggplot2)
 library(tidyr)
 library(wordcloud2) 
 library(data.table)
+library(xlsx)
 
 # in this script the term frequencies of the filters and the loglikelihood are visualized
 
@@ -83,6 +84,7 @@ ggplot(counts_df_ll2, aes(x = Name, y = Count, fill = Zeitung)) +
 
 write.xlsx(setDT(counts_df_ll2), "counts_loglikelihood_filter2.xlsx")
 
+
 #---------- results: filter 3
 #----- first: divide results by total amount of tokens and then multiply to get relative frequency
 comparison3<-termCountsComparison3/sum_allterms_comparison*100000
@@ -108,32 +110,64 @@ ggplot(counts_df_ll3, aes(x = Zeitung, y = Doppelnennung, fill = Zeitung)) +
 
 write.xlsx(setDT(counts_df_ll3), "counts_loglikelihood_filter3.xlsx")
 
+
 #---------- visualize wordcounts: 
+# count which words of the gendered_words_splitted appear with what frequency in the subsets
+
 # qualitative analysis -> look for meaningful words
+filtered_termCounttaz1 <- termCountstaz1[c("vorsitzende", "arbeitende", "besuchsperson", 
+                                           "fachkraft", "erwerbstätige", "studierende", 
+                                           "betroffene", "leserschaft", "pflegekraft", 
+                                           "handelnde", "geschäftsleitung", "moderation", 
+                                           "teilnahmeliste", "forschende", "angestellte", 
+                                           "führungskraft", "testpersonen", "lesende", 
+                                           "hauptfigur", "beratende", "mitglieder", 
+                                           "mitglied", "backende", "mitarbeitende", 
+                                           "teilnehmende", "redeliste","assistenz", 
+                                           "abteilungsleitung", "intendanz", "auszubildende", 
+                                           "sprechende")] 
+filtered_termCountfaz1 <- termCountsfaz1[c("studierende", "mitglied", "mitglieder", 
+                                           "vorsitzende", "führungskraft", "zielgruppe", 
+                                           "geschäftsführung", "fachkraft", "vorstandsmitglied", 
+                                           "mitarbeitende", "teilnehmende", "gesetzgebende", 
+                                           "versuchspersonen", "angehörige", "personal", 
+                                           "schreibende", "belegschaft", "schulleitung", 
+                                           "pflegepersonal", "redepult", "fachkräfte", 
+                                           "fachleute", "testpersonen", "moderation", 
+                                           "befragte", "eheleute", "pflegende", "schreibende")]
+filtered_termCountspiegel1 <- termCountsspiegel1[c("lehrende", "leitung", "moderierende", 
+                                                   "studierende", "mitglieder", "teamleitung", 
+                                                   "lehrkräfte", "mitglied", "pflegekraft", 
+                                                   "beschäftigte", "forschende", "führungskraft",
+                                                   "teamleitung")]
+filtered_termCountwelt1 <- termCountswelt1[c("studierende", "teilnehmende", "leitung", 
+                                             "anwesende", "lehrkräfte", "lernende",  
+                                             "studierendenwerk", "mitglieder", "fachkräfte", 
+                                             "zielgruppe",  "lesende", "mitarbeitende",  
+                                             "stadtoberhaupt", "versuchspersonen", "mitglied", 
+                                             "lehrende", "befragte", "elternteil", "führungskraft", 
+                                             "vorstand", "leserschaft",  "lehrkraft", "teamleitung", 
+                                             "betroffene",  "belegschaft", "redeliste", "personal", 
+                                             "beschäftigte", "führung", "fachleute", "teilnahmeliste", 
+                                             "pflegekraft", "vorsitz", "arbeitskraft", "promovierende", 
+                                             "ehrenamtliche", "feuerwehrleute", "redepult", "moderation", 
+                                             "pflegekräfte", "hauptfigur")]
 
-filtered_termCounttaz1 <- termCountstaz1[c("arbeitende", "besuchsperson", "fachkraft", "erwerbstätige", "studierende", "betroffene","leserschaft", "pflegekraft", "zielgruppe", "handelnde", "geschäftsleitung", "moderation", "teilnahmeliste", "forschende","angestellte", "lesende", "hauptfigur", "beratende","mitglieder", "backende","mitarbeitende", "teilnehmende", "redeliste","assistenz", "abteilungsleitung","auszubildende","sprechende")] 
-
-filtered_termCountfaz1 <- termCountsfaz1[c("studierende","mitglied","mitglieder", "führungskraft","zielgruppe","geschäftsführung","fachkraft","vorstandsmitglied","mitarbeitende","teilnehmende", "gesetzgebende", "versuchspersonen","angehörige","personal","schreibende","belegschaft", "schulleitung","pflegepersonal", "redepult", "fachkräfte","fachleute","testpersonen","moderation","befragte","eheleute","pflegende", "schreibende")]
-
-filtered_termCountspiegel1 <- termCountsspiegel1[c("lehrende", "leitung", "moderierende", "studierende", "mitglieder", "teamleitung", "lehrkräfte", "mitglied", "pflegekraft", "beschäftigte", "forschende", "führungskraft","teamleitung")]
-
-filtered_termCountwelt1 <- termCountswelt1[c("studierende", "teilnehmende", "leitung", "anwesende", "lehrkräfte", "lernende",  "studierendenwerk", "mitglieder", "fachkräfte", "zielgruppe",  "lesende", "mitarbeitende",  "stadtoberhaupt", "versuchspersonen", "mitglied", "lehrende", "befragte", "elternteil", "führungskraft", "vorstand", "leserschaft",  "lehrkraft", "teamleitung", "betroffene",  "belegschaft", "redeliste", "personal", "beschäftigte", "führung", "fachleute", "teilnahmeliste", "pflegekraft", "vorsitz", "arbeitskraft", "promovierende", "ehrenamtliche", "feuerwehrleute", "redepult", "moderation", "pflegekräfte", "hauptfigur")]
-
-#dann die relevanten terms der jeweiligen zeitungen realtivieren mit: geteilt durch die gesamttermzahl, *100000
+# divide results by total amount of tokens and then multiply to get relative frequency
 faz1<-filtered_termCountfaz1/sum_allterms_faz*100000
 taz1<-filtered_termCounttaz1/sum_allterms_taz*100000
 spiegel1<-filtered_termCountspiegel1/sum_allterms_spiegel*100000
 welt1<-filtered_termCountwelt1/sum_allterms_welt*100000
 
-# jetzt Visualisierung: z.b wordclouds
+# visualization: wordclouds
 df_taz1 <- data.frame(word = names(taz1), count = taz1, row.names = NULL)
-wordcloud2(df_taz1, shuffle = F, size = 0.2)
+wordcloud2(df_taz1, shuffle = F, size = 0.5)
 
 df_faz1 <- data.frame(word = names(faz1), count = faz1, row.names = NULL)
-wordcloud2(df_faz1, shuffle = F, size = 0.2)
+wordcloud2(df_faz1, shuffle = F, size = 0.5)
 
 df_spiegel1 <- data.frame(word = names(spiegel1), count = spiegel1, row.names = NULL)
-wordcloud2(df_spiegel1, shuffle = F, size = 0.2)
+wordcloud2(df_spiegel1, shuffle = F, size = 0.5)
 
 df_welt1 <- data.frame(word = names(welt1), count = welt1, row.names = NULL)
-wordcloud2(df_welt1, shuffle = F, size = 0.2)
+wordcloud2(df_welt1, shuffle = F, size = 0.5)
