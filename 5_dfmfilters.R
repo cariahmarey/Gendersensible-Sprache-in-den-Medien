@@ -18,12 +18,12 @@ filter1 <- function (DTM){
   #load gender list
   genderworddoc<- read.csv("gendered_words_splitted.csv")
   #create list of words
-  genderwordlist<-c(genderworddoc[["gendered_words_splitted"]])
+  genderwordlist <- c(genderworddoc[["gendered_words"]])
   
   #filter a DTM by the genderwordlist
-  dtm_filtered_1<-dfm_select(DTM,
+  dtm_filtered_1 <- dfm_select(DTM,
                              pattern = genderwordlist,
-                             selection ="keep",padding = FALSE)
+                             selection ="keep", padding = FALSE)
   
   return(dtm_filtered_1)
 }
@@ -82,8 +82,7 @@ filter2 <- function (NewTokens){
                              pattern = c("*_in","*_innen",":_in",":_innen", "(_in_)", 
                                          "(_innen_)", "·_in", "·_innen", "__in", 
                                          "__innen", "/_in", "/_innen", "-_in", "-_innen", 
-                                         "myplaceholder"),
-                             selection ="keep")#myplaceholder identifies binnen-I
+                                         "myplaceholder"), selection ="keep") #myplaceholder identifies binnen-I
 
   return(dtm_filtered_2)
 }

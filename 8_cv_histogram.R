@@ -99,5 +99,5 @@ ggplot(df_combined, aes(x = month, y = count, group = 1)) +
   geom_point(data = df_combined[df_combined$has_kurzbeschreibung,], aes(x = month, y = count), color = "#BFD4D9", size = 1.5) +
   geom_text(aes(label = kurzbeschreibung), vjust = -1.1, hjust = -0.015, size = 1.7, color = "black") +
   labs(x = "Month", y = "Count", title = "Monthly Counts and Single Events") +
-  theme(legend.title = element_blank())
+  theme_minimal()
 
