@@ -1,21 +1,22 @@
+# load the necessary libraries
 library(ggplot2) 
 library(tidyr)
 library(wordcloud2) 
 library(data.table)
 
-#---------- this script: visualizes the term frequency of the filters and the loglikelihood
+# in this script the term frequencies of the filters and the loglikelihood are visualized
 
-#------------------------------ Results: filter1
+#---------- results: filter1
 
-# before visualizing the loglikelihoood, we sort the list (> 0)
-# and: quick qualitative analysis -> which significant words make sense?
+# before visualizing the loglikelihood, we sort the list (> 0)
+# and: quick qualitative analysis -> which significant words are meaningful?
 
-filtered_listtaz_ll1 <- tazll1[tazll1 > 0] #für sinnvoll befunden: besuchsperson,studierende, moderation, teilnahmeliste, forschende, lesende, beratende, backende, teilnehmende, redeliste, abteilungsleitung
-filtered_listfaz_ll1 <- fazll1[fazll1 > 0] #studierende, führungskraft, versuchsperson, schreibende
-filtered_listspiegel_ll1 <- spiegelll1[spiegelll1 > 0] #redaktion, erzählende, teamleitung
-filtered_listwelt_ll1 <- weltll1[weltll1 > 0] #"studierende", "redaktion","teilnehmende","anwesende", "lehrkräfte", "lernende", "mitglieder", "lesende", "lehrende","befragte", "führungskraft", "teamleitung", "promovierende", "redepult", "hauptfigur"
+filtered_listtaz_ll1 <- tazll1[tazll1 > 0] #meaningful: besuchsperson,studierende, moderation, teilnahmeliste, forschende, lesende, beratende, backende, teilnehmende, redeliste, abteilungsleitung
+filtered_listfaz_ll1 <- fazll1[fazll1 > 0] #meaningful: studierende, führungskraft, versuchsperson, schreibende
+filtered_listspiegel_ll1 <- spiegelll1[spiegelll1 > 0] #meaningful: redaktion, erzählende, teamleitung
+filtered_listwelt_ll1 <- weltll1[weltll1 > 0] #meaningful:studierende, redaktion,teilnehmende,anwesende, lehrkräfte, lernende, mitglieder, lesende, lehrende,befragte, führungskraft, teamleitung, promovierende, redepult, hauptfigur
 
-#filter den vector für diese "sinnhaften" wörter
+# filter the vector for these meaningful words
 filtered_vec_taz <- filtered_listtaz_ll1[c("besuchsperson", "studierende", "moderation", "teilnahmeliste", "forschende", "lesende", "beratende", "backende", "teilnehmende", "redeliste", "abteilungsleitung")]
 
 filtered_vec_faz <- filtered_listfaz_ll1[c("studierende", "führungskraft", "versuchspersonen", "schreibende")]

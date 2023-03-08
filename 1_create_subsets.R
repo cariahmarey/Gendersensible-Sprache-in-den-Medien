@@ -1,13 +1,15 @@
-# Load the necessary libraries
+# load the necessary libraries
 library(tidyverse)
 
-#-------------------------import the full datasets
+# in this script the subsets of the datasets are generated 
+
+#---------- import the full datasets
 faz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\faz_full.csv", fileEncoding = "UTF-8")
 spiegel_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\spiegel_full.csv", fileEncoding = "UTF-8")
 taz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\taz_full.csv", fileEncoding = "UTF-8")
 welt_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\welt_full.csv")
 
-# define search pattern
+#---------- define search pattern
 search_pattern <- "Gendern|Gendersprache|Gender (Sprache|Sprachgebrauch)|Gender-(Sprache|Sprachgebrauch)|
 gendergerecht(:?e|er|en|ere) (Sprache|Sprachgebrauch)|gender-gerecht(:?e|er|en|ere) (Sprache|Sprachgebrauch)|
 gendersensibl(:?e|er|en|ere) (Sprache|Sprachgebrauch)|gender-sensibl(:?e|er|en|ere) (Sprache|Sprachgebrauch)|
@@ -27,6 +29,7 @@ Gegendert(:?e|r|n) (Sprache|Sprachgebrauch)|Gender-Gap|gendert|Gender Gap|Gegend
 Binnen-I|Binnen I|Gender:Doppelpunkt|Gender*Stern|Gender_Gap|Gender-Doppelpunkt|Gender Doppelpunkt|
 .*(Sprache|Sprachgebrauch)+.*(Gender).*|.*(Gender)+.*(Sprache|Sprachgebrauch).*"
 
+#---------- filter
 # Subset the dataframes to only include rows where the search pattern appears in the columns "title, url, keywords, description"
 faz_subset_gender <- faz_full[apply(faz_full[, c("title", "url", "keywords","description")], 
                                      1, function(x) any(grepl(search_pattern, x, ignore.case = T))), ]

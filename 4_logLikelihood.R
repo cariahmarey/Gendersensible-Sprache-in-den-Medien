@@ -1,14 +1,9 @@
 options(stringsAsFactors = FALSE)
 library(quanteda)
 
-#In diesem Script: Logikelihood test
+# in this script: definition of the Logikelihood function
 
-#--------Preparation for Likelikelihood (wird im implementation.R gemacht):
-
-#sum up columns for each term in a certain DTM
-#define the term counts of the target and comparison:
-
-#----------------------------1. loglikelihood (general form)
+#---------- Loglikelihood (general form)
 
 calculateLogLikelihood <- function(termCountsTarget, termCountsComparison, sumalterms_comparison, sumalterms_target, minSignificance = 6.63) {  
   
@@ -22,8 +17,8 @@ calculateLogLikelihood <- function(termCountsTarget, termCountsComparison, sumal
   
   a <- termCountsTarget[termsToCompare]
   b <- termCountsComparison[termsToCompare]
-  c <- sumalterms_target #hier aufpassen dass nicht der gesamte Count der reduzierten, sondern der vollen DTM genutzt wird
-  d <- sumalterms_comparison #hier aufpassen dass nicht der gesamte Count der reduzierten, sondern der vollen DTM genutzt wird
+  c <- sumalterms_target 
+  d <- sumalterms_comparison 
   Expected1 = c * (a+b) / (c+d)
   Expected2 = d * (a+b) / (c+d)
   t1 <- a * log((a/Expected1) + (a == 0))
@@ -33,6 +28,7 @@ calculateLogLikelihood <- function(termCountsTarget, termCountsComparison, sumal
   # compare relative frequencies to indicate over/underuse
   relA <- a / c
   relB <- b / d
+  
   # underused terms are multiplied by -1
   logLikelihood[relA < relB] <- logLikelihood[relA < relB] * -1
   

@@ -1,19 +1,16 @@
-options(stringsAsFactors = FALSE)
+# load necessary libraries
 library(quanteda)
 library(stringr)
 
-#Baustellen in diesem Skript: #-Filter 3; RegEx zu Doppelnennung ist noch unsauber, da nicht mit drinn ist, dass der Worststamm bei beiden Wörtern derselbe sein sollte
-
-# this script:
-# used to filter the dtm's by different forms of gendered language
+# in this script:
+# filter the dtm's by different forms of gendered language
 # 1. the first part filters a dtm, for a list of words of gendered language created by
-# the input of gender.de and richtiggendern
-# 2. the second part of the scrpit filters the dtm for a list of reg ex (*innen etc)
-# 3. the third part of the script filters for the usage of Doppelnennung of female and male forms
-# (Leher und Lehrerinnen)
+# the input of gender.de and richtiggendern.de
+# 2. the second part of the scrpit filters the dtm for a list of regex (e.g. "*innen")
+# 3. the third part of the script filters for the usage of Doppelnennungen of female and male forms
+# (e.g. Lehrer und Lehrerinnen)
 
-#--------------------filter 1: filter dtm for list of gendered words:
-
+#---------- filter 1: filter dtm for list of gendered words:
 #function that filters a given DTM through filter 1 and returns the reduced DTM
 
 filter1 <- function (DTM){
@@ -31,19 +28,19 @@ filter1 <- function (DTM){
   return(dtm_filtered_1)
 }
 
-#-------------------- filter 1: filter dtm by reg Ex list
+#---------- filter 2: filter dtm by reg Ex list
 
 # in the tokenization the * symbol is put as a single token, 
-#: stays in the middle of the word, 
-#() become single tokens
-#/ become single tokens
+# : stays in the middle of the word, 
+# () become single tokens
+# / become single tokens
 # - stay in the middle of the word
-#Capitalletters are lowercased
+# capitalized letters are lowercased
 
-#--> so we first have to adjust our Tokens in the Corpus:
-
+# so: the tokens in the corpus need to be adjusted first
 
 adjusttokens_filter2 <- function(Tokens) {
+  
   #take care of the : - · _ cases, by splitting tokens:
   symbolsplit <- tokens_split(Tokens, separator = ":",
                               valuetype = c("fixed", "regex"),
@@ -69,11 +66,10 @@ adjusttokens_filter2 <- function(Tokens) {
                                            c("·", "in"), c("·", "innen"),
                                            c("_", "in"), c("_", "innen")))
   
-  #now we only have to consider that the regex entails: _
-  #/- schreibweise fällt raus, und wird zu - schreibweise
+  # now we only have to consider that the regex entails: _
+  # "/-" becomes "-"
 
   return(adjustedtokens)
-  
 }
 
 filter2 <- function (NewTokens){
@@ -83,37 +79,26 @@ filter2 <- function (NewTokens){
   
   #filter a DTM by the regexlist
   dtm_filtered_2<-dfm_select(filter2_dtm,
-                             pattern = c("*_in","*_innen",":_in",":_innen", "(_in_)", "(_innen_)", 
-                                         "·_in", "·_innen", "__in", "__innen", "/_in", "/_innen", "-_in", "-_innen", "myplaceholder"),
-                             selection ="keep")#myplaceholder identifieziert Binnen-I's
+                             pattern = c("*_in","*_innen",":_in",":_innen", "(_in_)", 
+                                         "(_innen_)", "·_in", "·_innen", "__in", 
+                                         "__innen", "/_in", "/_innen", "-_in", "-_innen", 
+                                         "myplaceholder"),
+                             selection ="keep")#myplaceholder identifies binnen-I
 
   return(dtm_filtered_2)
 }
 
-#-------------------- filter 3: filter dtm by doppelnennung
+#---------- filter 3: filter dtm by doppelnennungen
 
-#function that takes a corpus, applies filter 3, and gives out a NUMBER of matches
+#function that takes a corpus, applies filter 3, and gives out a count of matches
 
 filter3 <- function (corpus){
   
-  #find all doppelnennung in a corpus
-  #doppelnennung <- str_match_all(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
-  # test:
-  #doppelnennung <- str_match_all(corpus,"\\b([a-zA-Zäöüß]+)\\b und \\b\\1in\\b|\\b([a-zA-Zäöüß]+)in\\b und \\b\\1\\b|
-  #                               \\b([a-zA-Zäöüß]+)\\b und \\b\\1innen\\b|\\b([a-zA-Zäöüß]+)innen\\b und \\b\\1\\b")
-  
+  #find all doppelnennungen in the corpus
   doppelnennung <- str_match_all(corpus,"\\b(([A-Z][a-zäöüß]*)([a-zäöüß]*)?) und (\\2(in|innen))\\b|\\b((([A-Z][a-zäöüß]*)(([a-zäöüß]*)?)))+(in|innen)\\b und \\b\\6([a-z]*)")
   
-  print(doppelnennung)
-  
-  #no dtm should be created because for the log likelihood, target und reference corpora will 
-  # not have many intersections. However, one could use just the sums of reg exes found for both
-  #and calculate loklikelyhood with this
-  
-  #num_doppelnennung <- str_count(corpus,"(\\b[A-Z][a-z]* und [A-Z][a-z]*(innen|in)\\b)|(\\b[A-Z][a-z]*(innen|in) und [A-Z][a-z]*\\b)")
-  # test:
+  # get the number of the doppelnennungen in the corpus
   num_doppelnennung <- str_count(corpus,"\\b(([A-Z][a-zäöüß]*)([a-zäöüß]*)?) und (\\2(in|innen))\\b|\\b((([A-Z][a-zäöüß]*)(([a-zäöüß]*)?)))+(in|innen)\\b und \\b\\6([a-z]*)")
-  
   
   filter3sum <-sum(num_doppelnennung)
   

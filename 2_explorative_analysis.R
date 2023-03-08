@@ -1,21 +1,22 @@
+# load the necessary libraries
 library(ggplot2)
 library(quanteda)
 options(stringsAsFactors = F)
 
-#-------------------------import the subset datasets
-faz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv", fileEncoding = "UTF-8")
-spiegel_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\spiegel_subset.csv", fileEncoding = "UTF-8")
-taz_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv", fileEncoding = "UTF-8")
-welt_subset <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\welt_subset.csv", fileEncoding = "UTF-8")
+# in this script an explorative analysis is performed to get a vague overview of the data
 
+#---------- import the subset datasets
+faz_subset <- read.csv("faz_subset.csv", fileEncoding = "UTF-8")
+spiegel_subset <- read.csv("spiegel_subset.csv", fileEncoding = "UTF-8")
+taz_subset <- read.csv("taz_subset.csv", fileEncoding = "UTF-8")
+welt_subset <- read.csv("welt_subset.csv", fileEncoding = "UTF-8")
 
-# Define the regular expressions to search for in the body
+#---------- define the regular expressions to search for in the body
 regex_list <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)", 
                 "·in", "·innen", "\\\\_in", "\\\\_innen", "\\/in", "\\/innen", "\\\\/-in", "\\\\/-innen", 
                 "[A-Z][a-z]+(In|Innen)")
 
-#-------------- barcharts
-
+#---------- barcharts
 # create barcharts for every subset where we look for the presence of the regexes in the body
 for (i in 1:length(list_subsets)) {
   df <- list_subsets[[i]]
@@ -58,7 +59,7 @@ for (i in 1:length(list_subsets)) {
       scale_x_discrete(labels = c("FALSE" = "No", "TRUE" = "Yes")) +
       ggtitle("Sueddeutsche: Counts of Regular Expressions in Body Column")
     # assign name to the bar chart
-    assign(paste0("barchart_sueddeutsche"), counts_chart)
+    assign(paste0("barchart_taz"), counts_chart)
   }
   
   else {
@@ -69,7 +70,7 @@ for (i in 1:length(list_subsets)) {
       scale_x_discrete(labels = c("FALSE" = "No", "TRUE" = "Yes")) +
       ggtitle("taz: Counts of Regular Expressions in Body Column")
     # assign name to the bar chart
-    assign(paste0("barchart_taz"), counts_chart)
+    assign(paste0("barchart_welt"), counts_chart)
   }
 
 }

@@ -1,17 +1,19 @@
-options(stringsAsFactors = FALSE)
+# load necessary libraries
 library(quanteda)
 library(stringr)
 
-# this script: implementation of the scripts differentdfmfilter.R 
-# und logLikelihood.R auf die Subsets, samt preprocessing der Corpora
+# in this script: implementation of the scripts "4logLikelihood" and 5_dfmfilter" 
+# on the subsets, including preprocessing of the data
 
-#------------------ set pattern for recognition of binnen-I like "LehrerInnen"
+#---------- set pattern for recognition of binnen-I like "LehrerInnen" and set placeholder
 pattern_binneni = "\\b\\w+I[a-z]+\\b"
-placeholder = "myplaceholder" #replace every occurrence of a binnen-I with a placeholder string
+#replace every occurrence of a binnen-I with a placeholder string
+placeholder = "myplaceholder" 
 
-#--------- Referencecorpora (reference corpora does not show "_", so it does not exist)
+#---------- reference corpus
+# info: reference does does not contain "_" 
 
-#---- preprocessing
+#----- preprocessing
 #read in reference data
 comparison_text2020 <- readLines("deu_news_2020_30K-sentences.txt")
 comparison_text2021 <- readLines("deu_news_2021_30K-sentences.txt")
@@ -30,22 +32,22 @@ reference_tokens <- reference_corpus %>%
 # create DTM
 reference_DTM <- dfm(reference_tokens)
 
-#---- filter for the differnt dtms (see differentdfmfilters.R)
+#----- filter for the differnt dtms (see "5_dfmfilters")
 referencefilter1<-filter1(reference_DTM)
 reference_newtokens <- adjusttokens_filter2(reference_tokens) #to adjust the tokens for filter 2
 referencefilter2 <-filter2(reference_newtokens)
 referencefilter3 <-filter3(reference_corpus)
 
-#---- Loglikelihood
-#preparation: _sum up counts for each term
-sumalterms_comparison <-sum(colSums(reference_DTM))#to calculate d in the Loglikelidood.R
+#----- loglikelihood
+#preparation: sum up counts for each term
+sumalterms_comparison <-sum(colSums(reference_DTM)) #to calculate d in "4_loglikelihood"
 termCountsComparison1<- colSums(referencefilter1)
 termCountsComparison2<- colSums(referencefilter2)
 termCountsComparison3<-referencefilter3
 
 
-#--------- TAZ
-#---- preprocessing
+#---------- TAZ
+#----- preprocessing
 taz_subset <- read.csv("taz_subset.csv")
 
 # create corpus
@@ -61,15 +63,15 @@ taz_tokens <- taz_corpus %>%
 taz_DTM <- taz_tokens %>%
   dfm()
 
-#--- filter
+#----- filter
 tazfilter1<-filter1(taz_DTM)
 taz_newtokens <- adjusttokens_filter2(taz_tokens)
 tazfilter2 <-filter2(taz_newtokens)
 tazfilter3 <-filter3(taz_corpus)
 
-#Loglikelihood
+#----- loglikelihood
 #preparation
-sumalterms_taz <-sum(colSums(taz_DTM))#to calculate c
+sumalterms_taz <-sum(colSums(taz_DTM)) # calculate c
 termCountstaz1<- colSums(tazfilter1)
 termCountstaz2<- colSums(tazfilter2)
 termCountstaz3<-tazfilter3
@@ -80,8 +82,8 @@ tazll2<-calculateLogLikelihood(termCountstaz2, termCountsComparison2, sumalterms
 tazll3<-calculateLogLikelihood(termCountstaz3, termCountsComparison3, sumalterms_comparison, sumalterms_taz, minSignificance = 6.63)
 
 
-#--------- FAZ
-#preprocessing
+#---------- FAZ
+#----- preprocessing
 faz_subset <- read.csv("faz_subset.csv")
 
 # create corpus
@@ -93,17 +95,17 @@ faz_tokens <- faz_corpus %>%
   tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
   tokens_tolower()
  
-# Create DTM 
+# create DTM 
 faz_DTM <- faz_tokens %>%
   dfm()
 
-#filter
+#----- filter
 fazfilter1<-filter1(faz_DTM)
 faz_newtokens <- adjusttokens_filter2(faz_tokens)
 fazfilter2 <-filter2(faz_newtokens)
 fazfilter3 <-filter3(faz_corpus)
 
-#Loglikelihood
+#----- loglikelihood
 #preparation
 sumalterms_faz <-sum(colSums(faz_DTM))
 termCountsfaz1<- colSums(fazfilter1)
@@ -116,45 +118,44 @@ fazll2<-calculateLogLikelihood(termCountsfaz2, termCountsComparison2, sumalterms
 fazll3<-calculateLogLikelihood(termCountsfaz3, termCountsComparison3, sumalterms_comparison, sumalterms_faz, minSignificance = 6.63)
 
 
-#--------- spiegel
-#preprocessing
+#---------- spiegel
+#----- preprocessing
 spiegel_subset <- read.csv("spiegel_subset.csv")
 
 # create corpus
 spiegel_corpus <- corpus(spiegel_subset$body, docnames = spiegel_subset$X)
 
-# Preprocessing of the corpus (tokensization)
+# tokenization
 spiegel_tokens <- spiegel_corpus %>%
   tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
   tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
   tokens_tolower()
 
-# Create DTM 
+# create DTM 
 spiegel_DTM <- spiegel_tokens %>%
   dfm()
 
-# filter
+#----- filter
 spiegelfilter1<-filter1(spiegel_DTM)
 spiegel_newtokens <- adjusttokens_filter2(spiegel_tokens)
 spiegelfilter2 <-filter2(spiegel_newtokens)
 spiegelfilter3 <-filter3(spiegel_corpus)
 
-#Loglikelihood
-#preparation
+#----- loglikelihood
+# preparation
 sumalterms_spiegel <-sum(colSums(spiegel_DTM))#to calculate c
 termCountsspiegel1<- colSums(spiegelfilter1)
 termCountsspiegel2<- colSums(spiegelfilter2)
 termCountsspiegel3<-spiegelfilter3
 
-#test
+# test
 spiegelll1<-calculateLogLikelihood(termCountsspiegel1, termCountsComparison1, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
 spiegelll2<-calculateLogLikelihood(termCountsspiegel2, termCountsComparison2, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
 spiegelll3<-calculateLogLikelihood(termCountsspiegel3, termCountsComparison3, sumalterms_comparison, sumalterms_spiegel, minSignificance = 6.63)
 
-spiegelll3
 
-#--------- welt
-#preprocessing
+#---------- welt
+# preprocessing
 welt_subset <- read.csv("welt_subset.csv")
 
 # create corpus
@@ -166,17 +167,17 @@ welt_tokens <- welt_corpus %>%
   tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
   tokens_tolower()
 
-# Create DTM 
+# create DTM 
 welt_DTM <- welt_tokens %>%
   dfm()
 
-# filter
+#----- filter
 weltfilter1<-filter1(welt_DTM)
 welt_newtokens <- adjusttokens_filter2(welt_tokens)
 weltfilter2 <-filter2(welt_newtokens)
 weltfilter3 <-filter3(welt_corpus)
 
-#Loglikelihood
+#----- loglikelihood
 #preparation
 sumalterms_welt <-sum(colSums(welt_DTM))#to calculate c
 termCountswelt1<- colSums(weltfilter1)

@@ -1,9 +1,6 @@
 # cross validation with event timeline
 
-# y: number of articles
-# x: month
-# + points with single events from qualitative research
-
+# load necessary libraries
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
