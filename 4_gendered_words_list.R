@@ -43,6 +43,8 @@ names(gendered_words1)[1] <- "gendered_words"
 url <- "https://www.gendern.de/"
 page <- read_html(url)
 
+
+
 # Create an empty data frame to store the table rows
 gendered_words2 <- data.frame()
 

@@ -9,7 +9,7 @@ library(xlsx)
 
 #---------- results: filter 1
 
-# before visualizing the loglikelihood, we sort the list (> 0)
+# before visualizing the log likelihood, we sort the list (> 0)
 # and: qualitative analysis -> look for meaningful words
 
 filtered_list_taz_ll1 <- tazll1[tazll1 > 0] #meaningful: besuchsperson,studierende, moderation, teilnahmeliste, forschende, lesende, beratende, backende, teilnehmende, redeliste, abteilungsleitung
@@ -17,7 +17,7 @@ filtered_list_faz_ll1 <- fazll1[fazll1 > 0] #meaningful: studierende, führungsk
 filtered_list_spiegel_ll1 <- spiegelll1[spiegelll1 > 0] #meaningful: erzählende, teamleitung
 filtered_list_welt_ll1 <- weltll1[weltll1 > 0] #meaningful: studierende, teilnehmende, anwesende, lehrkräfte, lernende, vorsitzende, mitglieder, lesende, lehrende, führungskraft, teamleitung, kundschaft, promovierende, redepult, hauptfigur
 
-# filter the vector for these meaningful words
+# manually filter the vector for these meaningful words
 filtered_vec_taz <- filtered_list_taz_ll1[c("besuchsperson", "studierende", "moderation", "teilnahmeliste", "forschende", "lesende", "beratende", "backende", "teilnehmende", "redeliste", "abteilungsleitung")]
 
 filtered_vec_faz <- filtered_list_faz_ll1[c("studierende", "führungskraft", "versuchspersonen", "schreibende")]
@@ -54,11 +54,11 @@ taz2<-termCountstaz2/sum_allterms_taz*100000
 spiegel2<-termCountsspiegel2/sum_allterms_spiegel*100000
 welt2 <-termCountswelt2/sum_allterms_welt*100000
 
-#----- visualization for filter 2 (barchart)
+#----- counts visualization for filter 2 (barchart)
 
 # create a named list with all the data
 data_list2 <- list(comparison2, faz2, spiegel2, welt2, taz2)
-names(data_list2) <- c("Vergleichskorpus", "FAZ", "Spiegel", "Welt", "TAZ")
+names(data_list2) <- c("Vergleichskorpus", "FAZ", "Spiegel", "Welt", "taz")
 
 # get all the unique names across all lists
 all_names2 <- unique(unlist(lapply(data_list2, names)))
@@ -69,21 +69,32 @@ counts_df2 <- data.frame(Name = all_names2,
                           x[all_names2]
                         }))
 
-# Reshape the data frame into long format
-counts_df_ll2 <- gather(counts_df2, key = "Zeitung", value = "Count", -Name)
+# reshape the data frame into long format
+counts_df2 <- gather(counts_df2, key = "Zeitung", value = "Count", -Name)
 
-# Create the bar chart
-ggplot(counts_df_ll2, aes(x = Name, y = Count, fill = Zeitung)) +
+# create the bar chart
+ggplot(counts_df2, aes(x = Name, y = Count, fill = Zeitung)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Verwendung verschiedene Genderformen in deutschen Tageszeitungen",
        x = "Genderform",
        y = "Anzahl/Gesamtmenge*100.000") +
   theme_minimal()
 
-#----- visualization for filter 2 (table)
+#----- log likelihood visualization for filter 2 (table)
+data_list_ll2 <- list(fazll2, spiegelll2, weltll2, tazll2)
+names(data_list_ll2) <- c("FAZ", "Spiegel", "Welt", "taz")
 
+# Get all the unique names across all lists
+all_names_ll2 <- unique(unlist(lapply(data_list_ll2, names)))
+
+# Create a data frame with counts for each name in each list
+counts_df_ll2 <- data.frame(Genderzeichen = all_names_ll2,
+                           sapply(data_listll2, function(x) {
+                             x[all_namesll2]
+                           }))
+
+# export dataframe as xlsx
 write.xlsx(setDT(counts_df_ll2), "counts_loglikelihood_filter2.xlsx")
-
 
 #---------- results: filter 3
 #----- first: divide results by total amount of tokens and then multiply to get relative frequency
@@ -93,22 +104,29 @@ taz3<-termCountstaz3/sum_allterms_taz*100000
 spiegel3<-termCountsspiegel3/sum_allterms_spiegel*100000
 welt3<-termCountswelt3/sum_allterms_welt*100000
 
-#----- visualization for filter 3 (barchart)
+#----- counts visualization for filter 3 (barchart)
 # Create a named list with all the data
 data_list3 <- list(comparison3, faz3, spiegel3, welt3, taz3)
 names(data_list3) <- c("Vergleichskorpus", "FAZ", "Spiegel", "Welt", "TAZ")
 
-counts_df_ll3 <- data.frame(Zeitung = names(data_list3),
+counts_df3 <- data.frame(Zeitung = names(data_list3),
                  Doppelnennung = unlist(data_list3))
 
-ggplot(counts_df_ll3, aes(x = Zeitung, y = Doppelnennung, fill = Zeitung)) +
+ggplot(counts_df3, aes(x = Zeitung, y = Doppelnennung, fill = Zeitung)) +
   geom_bar(stat = "identity") +
   labs(x = "Doppelnennung", y = "Anzahl/Gessamtmenge*100.000") +
   theme_minimal()
 
-#----- loglikelihood filter 3
+#----- log likelihood visualization filter 3
+# create a named list with all the data
+data_list_ll3 <- list(fazll3, spiegelll3, weltll3, tazll3)
+names(data_list_ll3) <- c("FAZ", "Spiegel", "Welt", "TAZ")
 
-write.xlsx(setDT(counts_df_ll3), "counts_loglikelihood_filter3.xlsx")
+df_ll3 <- data.frame(Zeitung = names(data_list_ll3),
+                    Doppelnennung = unlist(data_list_ll3))
+
+# export dataframe as xlsx
+write.xlsx(setDT(df_ll3), "counts_loglikelihood_filter3.xlsx")
 
 
 #---------- visualize wordcounts: 

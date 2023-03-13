@@ -97,12 +97,6 @@ faz_subset[] <- lapply(faz_subset, function(x) {
 # delete rows from Welt Subset which contain the gibberish language (only articles with a paywall contain this gibberish language)
 welt_subset <- welt_subset[!grepl("uuu |elu |vnlpe ", welt_subset$body),]
 
-# delete duplicated rows
-faz_subset <- faz_subset[!duplicated(faz_subset),]
-spiegel_subset <- spiegel_subset[!duplicated(spiegel_subset),]
-taz_subset <- taz_subset[!duplicated(taz_subset),]
-welt_subset <- welt_subset[!duplicated(welt_subset),]
-
 # put subsets into list
 list_subsets <- list(faz_subset, spiegel_subset, taz_subset, welt_subset)
 
@@ -128,6 +122,12 @@ for (i in 1:length(list_subsets)) {
     assign(paste0("welt_subset"), df)
   }
 }
+
+# delete duplicated rows
+faz_subset <- faz_subset[!duplicated(faz_subset),]
+spiegel_subset <- spiegel_subset[!duplicated(spiegel_subset),]
+taz_subset <- taz_subset[!duplicated(taz_subset),]
+welt_subset <- welt_subset[!duplicated(welt_subset),]
 
 # put subsets into list
 list_subsets <- list(faz_subset, spiegel_subset, taz_subset, welt_subset)

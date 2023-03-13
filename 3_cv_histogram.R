@@ -98,8 +98,9 @@ df_combined$has_kurzbeschreibung <- ifelse(df_combined$kurzbeschreibung != "", T
 # plot the data with ggplot
 ggplot(df_combined, aes(x = month, y = count, group = 1)) +
   geom_line(color = "#804674") +
+  theme_minimal() +
   geom_point(data = df_combined[df_combined$has_kurzbeschreibung,], aes(x = month, y = count), color = "#898AA6", size = 1.5) +
-  geom_text(aes(label = kurzbeschreibung), vjust = -1.1, hjust = 1.02, size = 1.8, color = "black") +
+  geom_text(aes(label = kurzbeschreibung), vjust = -1.01, hjust = 1.01, size = 2.9, color = "black") +
   labs(x = "Monat", y = "Anzahl Artikel", title = "Monatliche Artikel und einzelne Events") +
   theme(axis.text.x = element_text(size = 5))
 

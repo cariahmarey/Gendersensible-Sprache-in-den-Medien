@@ -45,146 +45,93 @@ termCountsComparison1<- colSums(referencefilter1)
 termCountsComparison2<- colSums(referencefilter2)
 termCountsComparison3<-referencefilter3
 
+#---------- newspapers 
 
-#---------- FAZ
-#----- preprocessing
-faz_subset <- read.csv("faz_subset.csv")
+for (i in length(list_subsets)) {
+  
+  # get subset
+  subset <- list_subsets[[i]]
+  
+  # create corpus
+  corpus <- corpus(subset$body, docnames = subset$X)
+  
+  # tokenization
+  tokens <- corpus %>%
+    tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
+    tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
+    tokens_tolower()
+  
+  # create DTM 
+  DTM <- tokens %>%
+    dfm()
+  
+  #----- filter
+  filter1<-filter1(DTM)
+  newtokens <- adjusttokens_filter2(tokens)
+  filter2 <-filter2(welt_newtokens)
+  filter3 <-filter3(welt_corpus)
+  
+  #----- log likelihood
+  # preparation
+  sum_allterms <-sum(colSums(DTM)) #to calculate c
+  termCounts1<- colSums(filter1)
+  termCounts2<- colSums(filter2)
+  termCounts3<- filter3
+  
+  # test
+  ll1<-calculateLogLikelihood(termCounts1, termCountsComparison1, sum_allterms_comparison, sum_allterms, minSignificance = 6.63)
+  ll2<-calculateLogLikelihood(termCounts2, termCountsComparison2, sum_allterms_comparison, sum_allterms, minSignificance = 6.63)
+  ll3<-calculateLogLikelihood(termCounts3, termCountsComparison3, sum_allterms_comparison, sum_allterms, minSignificance = 6.63)
+  
+  #----- assign correct names to the objects 
+  # FAZ
+  if (i == 1) {
+    assign(paste0("sum_allterms_faz"), sum_allterms)
+    assign(paste0("termCountsfaz1"), termCounts1)
+    assign(paste0("termCountsfaz2"), termCounts2)
+    assign(paste0("termCountsfaz3"), termCounts3)
+    
+    assign(paste0("fazll1"), ll1)
+    assign(paste0("fazll2"), ll2)
+    assign(paste0("fazll3"), ll3)
+  }
+  
+  # Spiegel
+  if (i == 2) {
+    assign(paste0("sum_allterms_spiegel"), sum_allterms)
+    assign(paste0("termCountsspiegel1"), termCounts1)
+    assign(paste0("termCountsspiegel2"), termCounts2)
+    assign(paste0("termCountsspiegel3"), termCounts3)
+    
+    assign(paste0("spiegelll1"), ll1)
+    assign(paste0("spiegelll2"), ll2)
+    assign(paste0("spiegelll3"), ll3)
+  }
+  
+  # taz
+  if (i == 3) {
+    assign(paste0("sum_allterms_taz"), sum_allterms)
+    assign(paste0("termCountstaz1"), termCounts1)
+    assign(paste0("termCountstaz2"), termCounts2)
+    assign(paste0("termCountstaz3"), termCounts3)
+    
+    assign(paste0("tazll1"), ll1)
+    assign(paste0("tazll2"), ll2)
+    assign(paste0("tazll3"), ll3)
+  }
+  
+  # Welt
+  else {
+    assign(paste0("sum_allterms_welt"), sum_allterms)
+    assign(paste0("termCountswelt1"), termCounts1)
+    assign(paste0("termCountswelt2"), termCounts2)
+    assign(paste0("termCountswelt3"), termCounts3)
+    
+    assign(paste0("weltll1"), ll1)
+    assign(paste0("weltll2"), ll2)
+    assign(paste0("weltll3"), ll3)
+  }
 
-# create corpus
-faz_corpus <- corpus(faz_subset$body, docnames = faz_subset$X)
+}
 
-# tokenization
-faz_tokens <- faz_corpus %>%
-  tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
-  tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
-  tokens_tolower()
- 
-# create DTM 
-faz_DTM <- faz_tokens %>%
-  dfm()
-
-#----- filter
-fazfilter1<-filter1(faz_DTM)
-faz_newtokens <- adjusttokens_filter2(faz_tokens)
-fazfilter2 <-filter2(faz_newtokens)
-fazfilter3 <-filter3(faz_corpus)
-
-#----- loglikelihood
-#preparation
-sum_allterms_faz <-sum(colSums(faz_DTM))
-termCountsfaz1<- colSums(fazfilter1)
-termCountsfaz2<- colSums(fazfilter2)
-termCountsfaz3<-fazfilter3
-
-#test
-fazll1<-calculateLogLikelihood(termCountsfaz1, termCountsComparison1,sum_allterms_comparison, sum_allterms_faz, minSignificance = 6.63)
-fazll2<-calculateLogLikelihood(termCountsfaz2, termCountsComparison2, sum_allterms_comparison, sum_allterms_faz, minSignificance = 6.63)
-fazll3<-calculateLogLikelihood(termCountsfaz3, termCountsComparison3, sum_allterms_comparison, sum_allterms_faz, minSignificance = 6.63)
-
-
-#---------- spiegel
-#----- preprocessing
-spiegel_subset <- read.csv("spiegel_subset.csv")
-
-# create corpus
-spiegel_corpus <- corpus(spiegel_subset$body, docnames = spiegel_subset$X)
-
-# tokenization
-spiegel_tokens <- spiegel_corpus %>%
-  tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
-  tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
-  tokens_tolower()
-
-# create DTM 
-spiegel_DTM <- spiegel_tokens %>%
-  dfm()
-
-#----- filter
-spiegelfilter1<-filter1(spiegel_DTM)
-spiegel_newtokens <- adjusttokens_filter2(spiegel_tokens)
-spiegelfilter2 <-filter2(spiegel_newtokens)
-spiegelfilter3 <-filter3(spiegel_corpus)
-
-#----- loglikelihood
-# preparation
-sum_allterms_spiegel <-sum(colSums(spiegel_DTM))#to calculate c
-termCountsspiegel1<- colSums(spiegelfilter1)
-termCountsspiegel2<- colSums(spiegelfilter2)
-termCountsspiegel3<-spiegelfilter3
-
-# test
-spiegelll1<-calculateLogLikelihood(termCountsspiegel1, termCountsComparison1, sum_allterms_comparison, sum_allterms_spiegel, minSignificance = 6.63)
-spiegelll2<-calculateLogLikelihood(termCountsspiegel2, termCountsComparison2, sum_allterms_comparison, sum_allterms_spiegel, minSignificance = 6.63)
-spiegelll3<-calculateLogLikelihood(termCountsspiegel3, termCountsComparison3, sum_allterms_comparison, sum_allterms_spiegel, minSignificance = 6.63)
-
-
-#---------- TAZ
-#----- preprocessing
-taz_subset <- read.csv("taz_subset.csv")
-
-# create corpus
-taz_corpus <- corpus(taz_subset$body, docnames = taz_subset$X)
-
-# tokenization
-taz_tokens <- taz_corpus %>%
-  tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
-  tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
-  tokens_tolower()
-
-# Create DTM 
-taz_DTM <- taz_tokens %>%
-  dfm()
-
-#----- filter
-tazfilter1<-filter1(taz_DTM)
-taz_newtokens <- adjusttokens_filter2(taz_tokens)
-tazfilter2 <-filter2(taz_newtokens)
-tazfilter3 <-filter3(taz_corpus)
-
-#----- loglikelihood
-#preparation
-sum_allterms_taz <-sum(colSums(taz_DTM)) # calculate c
-termCountstaz1<- colSums(tazfilter1)
-termCountstaz2<- colSums(tazfilter2)
-termCountstaz3<-tazfilter3
-
-#test (see "4_loglikelihood")
-tazll1<-calculateLogLikelihood(termCountstaz1, termCountsComparison1, sum_allterms_comparison, sum_allterms_taz, minSignificance = 6.63)
-tazll2<-calculateLogLikelihood(termCountstaz2, termCountsComparison2, sum_allterms_comparison, sum_allterms_taz, minSignificance = 6.63)
-tazll3<-calculateLogLikelihood(termCountstaz3, termCountsComparison3, sum_allterms_comparison, sum_allterms_taz, minSignificance = 6.63)
-
-
-#---------- welt
-# preprocessing
-welt_subset <- read.csv("welt_subset.csv")
-
-# create corpus
-welt_corpus <- corpus(welt_subset$body, docnames = welt_subset$X)
-
-# tokenization
-welt_tokens <- welt_corpus %>%
-  tokens(remove_punct = FALSE, remove_numbers = TRUE, remove_symbols = FALSE) %>%
-  tokens_replace(pattern = pattern_binneni, replacement = placeholder, case_insensitive = FALSE, valuetype = "regex")%>% #replace binnen-I
-  tokens_tolower()
-
-# create DTM 
-welt_DTM <- welt_tokens %>%
-  dfm()
-
-#----- filter
-weltfilter1<-filter1(welt_DTM)
-welt_newtokens <- adjusttokens_filter2(welt_tokens)
-weltfilter2 <-filter2(welt_newtokens)
-weltfilter3 <-filter3(welt_corpus)
-
-#----- loglikelihood
-#preparation
-sum_allterms_welt <-sum(colSums(welt_DTM)) #to calculate c
-termCountswelt1<- colSums(weltfilter1)
-termCountswelt2<- colSums(weltfilter2)
-termCountswelt3<-weltfilter3
-
-#test
-weltll1<-calculateLogLikelihood(termCountswelt1, termCountsComparison1, sum_allterms_comparison, sum_allterms_welt, minSignificance = 6.63)
-weltll2<-calculateLogLikelihood(termCountswelt2, termCountsComparison2, sum_allterms_comparison, sum_allterms_welt, minSignificance = 6.63)
-weltll3<-calculateLogLikelihood(termCountswelt3, termCountsComparison3, sum_allterms_comparison, sum_allterms_welt, minSignificance = 6.63)
+  
