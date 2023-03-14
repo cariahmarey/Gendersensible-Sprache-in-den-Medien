@@ -1,2 +1,2 @@
-# Gendergerechte-Sprache-im-ffentlichen-Diskurs
+# Gendersensible Sprache in den Medien
 Methods &amp; Applications in DH
