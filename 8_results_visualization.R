@@ -30,19 +30,19 @@ filtered_vec_welt <- filtered_list_welt_ll1[c("studierende", "teilnehmende","anw
 #----- loglikelihood, visualization of filter 1 (table)
 
 data_list_ll1 <- list(filtered_vec_faz, filtered_vec_spiegel, filtered_vec_welt, filtered_vec_taz)
-names(data_listll1) <- c("FAZ", "Spiegel", "Welt", "TAZ")
+names(data_listll1) <- c("FAZ", "Spiegel", "Welt", "taz")
 
 # Get all the unique names across all lists
 all_names_ll1 <- unique(unlist(lapply(data_list_ll1, names)))
 
 # Create a data frame with counts for each name in each list
-counts_df_ll1 <- data.frame(Neutralisierung = all_names_ll1,
+counts_df <- data.frame(Neutralisierung = all_names_ll1,
                            sapply(data_list_ll1, function(x) {
                              x[all_names_ll1]
                            }))
 
 # save table as xlsx
-write.xlsx(counts_df_ll1, "counts_loglikelihood_filter1.xlsx")
+write.xlsx(counts_df_ll1, "counts_filter1.xlsx")
 
 
 #---------- results: filter 2
@@ -75,8 +75,8 @@ counts_df2 <- gather(counts_df2, key = "Zeitung", value = "Count", -Name)
 # create the bar chart
 ggplot(counts_df2, aes(x = Name, y = Count, fill = Zeitung)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Verwendung verschiedene Genderformen in deutschen Tageszeitungen",
-       x = "Genderform",
+  labs(title = "Verwendung verschiedene Genderzeichen in deutschen Tageszeitungen",
+       x = "Genderzeichen",
        y = "Anzahl/Gesamtmenge*100.000") +
   theme_minimal()
 
@@ -107,7 +107,7 @@ welt3<-termCountswelt3/sum_allterms_welt*100000
 #----- counts visualization for filter 3 (barchart)
 # Create a named list with all the data
 data_list3 <- list(comparison3, faz3, spiegel3, welt3, taz3)
-names(data_list3) <- c("Vergleichskorpus", "FAZ", "Spiegel", "Welt", "TAZ")
+names(data_list3) <- c("Vergleichskorpus", "FAZ", "Spiegel", "Welt", "taz")
 
 counts_df3 <- data.frame(Zeitung = names(data_list3),
                  Doppelnennung = unlist(data_list3))
@@ -120,7 +120,7 @@ ggplot(counts_df3, aes(x = Zeitung, y = Doppelnennung, fill = Zeitung)) +
 #----- log likelihood visualization filter 3
 # create a named list with all the data
 data_list_ll3 <- list(fazll3, spiegelll3, weltll3, tazll3)
-names(data_list_ll3) <- c("FAZ", "Spiegel", "Welt", "TAZ")
+names(data_list_ll3) <- c("FAZ", "Spiegel", "Welt", "taz")
 
 df_ll3 <- data.frame(Zeitung = names(data_list_ll3),
                     Doppelnennung = unlist(data_list_ll3))
@@ -133,17 +133,6 @@ write.xlsx(setDT(df_ll3), "counts_loglikelihood_filter3.xlsx")
 # count which words of the gendered_words_splitted appear with what frequency in the subsets
 
 # qualitative analysis -> look for meaningful words
-filtered_termCounttaz1 <- termCountstaz1[c("vorsitzende", "arbeitende", "besuchsperson", 
-                                           "fachkraft", "erwerbstätige", "studierende", 
-                                           "betroffene", "leserschaft", "pflegekraft", 
-                                           "handelnde", "geschäftsleitung", "moderation", 
-                                           "teilnahmeliste", "forschende", "angestellte", 
-                                           "führungskraft", "testpersonen", "lesende", 
-                                           "hauptfigur", "beratende", "mitglieder", 
-                                           "mitglied", "backende", "mitarbeitende", 
-                                           "teilnehmende", "redeliste","assistenz", 
-                                           "abteilungsleitung", "intendanz", "auszubildende", 
-                                           "sprechende")] 
 filtered_termCountfaz1 <- termCountsfaz1[c("studierende", "mitglied", "mitglieder", 
                                            "vorsitzende", "führungskraft", "zielgruppe", 
                                            "geschäftsführung", "fachkraft", "vorstandsmitglied", 
@@ -158,6 +147,17 @@ filtered_termCountspiegel1 <- termCountsspiegel1[c("lehrende", "leitung", "moder
                                                    "lehrkräfte", "mitglied", "pflegekraft", 
                                                    "beschäftigte", "forschende", "führungskraft",
                                                    "teamleitung")]
+filtered_termCounttaz1 <- termCountstaz1[c("vorsitzende", "arbeitende", "besuchsperson", 
+                                           "fachkraft", "erwerbstätige", "studierende", 
+                                           "betroffene", "leserschaft", "pflegekraft", 
+                                           "handelnde", "geschäftsleitung", "moderation", 
+                                           "teilnahmeliste", "forschende", "angestellte", 
+                                           "führungskraft", "testpersonen", "lesende", 
+                                           "hauptfigur", "beratende", "mitglieder", 
+                                           "mitglied", "backende", "mitarbeitende", 
+                                           "teilnehmende", "redeliste","assistenz", 
+                                           "abteilungsleitung", "intendanz", "auszubildende", 
+                                           "sprechende")] 
 filtered_termCountwelt1 <- termCountswelt1[c("studierende", "teilnehmende", "leitung", 
                                              "anwesende", "lehrkräfte", "lernende",  
                                              "studierendenwerk", "mitglieder", "fachkräfte", 
@@ -173,19 +173,19 @@ filtered_termCountwelt1 <- termCountswelt1[c("studierende", "teilnehmende", "lei
 
 # divide results by total amount of tokens and then multiply to get relative frequency
 faz1<-filtered_termCountfaz1/sum_allterms_faz*100000
-taz1<-filtered_termCounttaz1/sum_allterms_taz*100000
 spiegel1<-filtered_termCountspiegel1/sum_allterms_spiegel*100000
+taz1<-filtered_termCounttaz1/sum_allterms_taz*100000
 welt1<-filtered_termCountwelt1/sum_allterms_welt*100000
 
 # visualization: wordclouds
-df_taz1 <- data.frame(word = names(taz1), count = taz1, row.names = NULL)
-wordcloud2(df_taz1, shuffle = F, size = 0.5)
-
 df_faz1 <- data.frame(word = names(faz1), count = faz1, row.names = NULL)
 wordcloud2(df_faz1, shuffle = F, size = 0.5)
 
 df_spiegel1 <- data.frame(word = names(spiegel1), count = spiegel1, row.names = NULL)
 wordcloud2(df_spiegel1, shuffle = F, size = 0.5)
+
+df_taz1 <- data.frame(word = names(taz1), count = taz1, row.names = NULL)
+wordcloud2(df_taz1, shuffle = F, size = 0.5)
 
 df_welt1 <- data.frame(word = names(welt1), count = welt1, row.names = NULL)
 wordcloud2(df_welt1, shuffle = F, size = 0.5)

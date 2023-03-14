@@ -47,7 +47,7 @@ termCountsComparison3<-referencefilter3
 
 #---------- newspapers 
 
-for (i in length(list_subsets)) {
+for (i in 1:length(list_subsets)) {
   
   # get subset
   subset <- list_subsets[[i]]
@@ -66,17 +66,17 @@ for (i in length(list_subsets)) {
     dfm()
   
   #----- filter
-  filter1<-filter1(DTM)
+  filter_1 <- filter1(DTM)
   newtokens <- adjusttokens_filter2(tokens)
-  filter2 <-filter2(welt_newtokens)
-  filter3 <-filter3(welt_corpus)
+  filter_2 <-filter2(newtokens)
+  filter_3 <-filter3(corpus)
   
   #----- log likelihood
   # preparation
   sum_allterms <-sum(colSums(DTM)) #to calculate c
-  termCounts1<- colSums(filter1)
-  termCounts2<- colSums(filter2)
-  termCounts3<- filter3
+  termCounts1<- colSums(filter_1)
+  termCounts2<- colSums(filter_2)
+  termCounts3<- filter_3
   
   # test
   ll1<-calculateLogLikelihood(termCounts1, termCountsComparison1, sum_allterms_comparison, sum_allterms, minSignificance = 6.63)
