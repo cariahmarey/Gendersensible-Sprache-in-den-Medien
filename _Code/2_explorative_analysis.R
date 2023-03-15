@@ -6,10 +6,10 @@ options(stringsAsFactors = F)
 # in this script an explorative analysis is performed to get a vague overview of the data
 
 #---------- import the subset datasets
-faz_subset <- read.csv("faz_subset.csv", fileEncoding = "UTF-8")
-spiegel_subset <- read.csv("spiegel_subset.csv", fileEncoding = "UTF-8")
-taz_subset <- read.csv("taz_subset.csv", fileEncoding = "UTF-8")
-welt_subset <- read.csv("welt_subset.csv", fileEncoding = "UTF-8")
+faz_subset <- read.csv("Subsets\\faz_subset.csv", fileEncoding = "UTF-8")
+spiegel_subset <- read.csv("Subsets\\spiegel_subset.csv", fileEncoding = "UTF-8")
+taz_subset <- read.csv("Subsets\\taz_subset.csv", fileEncoding = "UTF-8")
+welt_subset <- read.csv("Subsets\\welt_subset.csv", fileEncoding = "UTF-8")
 
 #---------- define the regular expressions to search for in the body
 regex_list <- c("\\*in", "\\*innen", ":in", ":innen", "\\(in\\)", "\\(innen\\)", 

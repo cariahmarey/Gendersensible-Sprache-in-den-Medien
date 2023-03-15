@@ -16,7 +16,7 @@ library(stringr)
 filter1 <- function (DTM){
   
   #load gender list
-  genderworddoc<- read.csv("gendered_words_splitted.csv")
+  genderworddoc<- read.csv("Genderliste\\gendered_words_splitted.csv")
   #create list of words
   genderwordlist <- c(genderworddoc[["gendered_words"]])
   

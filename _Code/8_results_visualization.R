@@ -36,13 +36,13 @@ names(data_listll1) <- c("FAZ", "Spiegel", "Welt", "taz")
 all_names_ll1 <- unique(unlist(lapply(data_list_ll1, names)))
 
 # Create a data frame with counts for each name in each list
-counts_df <- data.frame(Neutralisierung = all_names_ll1,
+counts_df_ll1 <- data.frame(Neutralisierung = all_names_ll1,
                            sapply(data_list_ll1, function(x) {
                              x[all_names_ll1]
                            }))
 
 # save table as xlsx
-write.xlsx(counts_df_ll1, "counts_filter1.xlsx")
+write.xlsx(counts_df_ll1, "Tabellen Log Likelihood\\counts_loglikelihood_filter1.xlsx")
 
 
 #---------- results: filter 2
@@ -94,7 +94,7 @@ counts_df_ll2 <- data.frame(Genderzeichen = all_names_ll2,
                            }))
 
 # export dataframe as xlsx
-write.xlsx(setDT(counts_df_ll2), "counts_loglikelihood_filter2.xlsx")
+write.xlsx(setDT(counts_df_ll2), "Tabellen Log Likelihood\\counts_loglikelihood_filter2.xlsx")
 
 #---------- results: filter 3
 #----- first: divide results by total amount of tokens and then multiply to get relative frequency
@@ -126,7 +126,7 @@ df_ll3 <- data.frame(Zeitung = names(data_list_ll3),
                     Doppelnennung = unlist(data_list_ll3))
 
 # export dataframe as xlsx
-write.xlsx(setDT(df_ll3), "counts_loglikelihood_filter3.xlsx")
+write.xlsx(setDT(df_ll3), "Tabellen Log Likelihood\\counts_loglikelihood_filter3.xlsx")
 
 
 #---------- visualize wordcounts: 

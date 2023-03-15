@@ -2,6 +2,7 @@ options(stringsAsFactors = FALSE)
 require(quanteda)
 library(dplyr)
 library(stringr)
+library(xlsx)
 
 # in this script the context of the regex is visualized:
 
@@ -49,6 +50,8 @@ list_subsets_withplaceholder <- list(faz_subset_withplaceholder, spiegel_subset_
 # define the regular expressions to search for in the body
 regex_list <- "\\b[A-Z][a-zäöüß]*\\b\\*in|\\b[A-Z][a-zäöüß]*\\*innen\\b|\\b[A-Z][a-zäöüß]*:in\\b|\\b[A-Z][a-zäöüß]*:innen\\b|\\b[A-Z][a-zäöüß]*in_\\b|\\b[A-Z][a-zäöüß]*innen_\\b|\\b[A-Z][a-zäöüß]*·in\\b|\\b[A-Z][a-zäöüß]*·innen\\b|\\b[A-Z][a-zäöüß]*_in\\b|\\b[A-Z][a-zäöüß]*__innen\\b|\\b[A-Z][a-zäöüß]*\\/in\\b|\\b[A-Z][a-zäöüß]*\\/innen\\b|\\b[A-Z][a-zäöüß]*-in\\b|\\b[A-Z][a-zäöüß]*-innen\\b|\\bmyplaceholder\\b"
 
+class(regex_list)
+
 for (i in 1:length(list_subsets_withplaceholder)) {
   
   subset_withplaceholder <- list_subsets_withplaceholder[[i]]
@@ -89,22 +92,22 @@ for (i in 1:length(list_subsets_withplaceholder)) {
   # FAZ
   if (i == 1) {
     # Write the results to a text file
-    write.xlsx(regex_texts_sentences, "faz_regex_results.xlsx")
+    write.xlsx(regex_texts_sentences, "Kontext Sätze\\faz_regex_results.xlsx")
   }
   # Spiegel
   if (i == 2) {
     # Write the results to a text file
-    write.xlsx(regex_texts_sentences, "spiegel_regex_results.xlsx")
+    write.xlsx(regex_texts_sentences, "Kontext Sätze\\spiegel_regex_results.xlsx")
   }
   # taz
   if (i == 3) {
     # Write the results to a text file
-    write.xlsx(regex_texts_sentences, "taz_regex_results.xlsx")
+    write.xlsx(regex_texts_sentences, "Kontext Sätze\\taz_regex_results.xlsx")
   }
   # Welt
   else {
     # Write the results to a text file
-    write.xlsx(regex_texts_sentences, "welt_regex_results.xlsx")
+    write.xlsx(regex_texts_sentences, "Kontext Sätze\\welt_regex_results.xlsx")
   }
   
 }
@@ -117,13 +120,20 @@ genderworddoc<- read.csv("gendered_words_splitted.csv")
 #genderwordlist <- c(genderworddoc[["gendered_words"]])
 genderwordlist_selected <- as.list(as.character(counts_df_ll1$Neutralisierung))
 
+# convert the first character of each string to upper case
+genderwordlist_selected <- sapply(genderwordlist_selected, function(x) paste(toupper(substring(x, 1, 1)), substring(x, 2), sep = ""))
+
+# add word boundaries "\\b" at the beginning and end of each string
+genderwordlist_selected <- paste0("\\b", genderwordlist_selected, "\\b", collapse = "|")
+genderwordlist_selected
+
 for (i in 1:length(list_subsets_withplaceholder)) {
   
   subset_withplaceholder <- list_subsets_withplaceholder[[i]]
   
-  # create two colums in the df, which indicate whether there was a neutralform found, and which one:
-  # Use lapply to create a list of logical vectors indicating whether each neutralform is present in the body column
-  neutralform_presence <- lapply(genderwordlist_selected, function(word) grepl(word, subset_withplaceholder$body))
+  # create two colums in the df, which indicate whether there was a regex found, and which one:
+  # Use lapply to create a list of logical vectors indicating whether each regex is present in the body column
+  neutralform_presence <- lapply(genderwordlist_selected , function(regex) grepl(regex, subset_withplaceholder$body))
   
   # use Reduce to check whether any of the regular expressions are present in each row of the body column
   subset_withplaceholder$neutralform_present <- Reduce(`|`, neutralform_presence)
@@ -157,22 +167,22 @@ for (i in 1:length(list_subsets_withplaceholder)) {
   # FAZ
   if (i == 1) {
     # Write the results to a text file
-    write.xlsx(neutralform_texts_sentences, "faz_neutralforms_results.xlsx")
+    write.xlsx(neutralform_texts_sentences, "Kontext Sätze\\faz_neutralforms_results.xlsx")
   }
   # Spiegel
   if (i == 2) {
     # Write the results to a text file
-    write.xlsx(neutralform_texts_sentences, "spiegel_neutralforms_results.xlsx")
+    write.xlsx(neutralform_texts_sentences, "Kontext Sätze\\spiegel_neutralforms_results.xlsx")
   }
   # taz
   if (i == 3) {
     # Write the results to a text file
-    write.xlsx(neutralform_texts_sentences, "taz_neutralforms_results.xlsx")
+    write.xlsx(neutralform_texts_sentences, "Kontext Sätze\\taz_neutralforms_results.xlsx")
   }
   # Welt
   else {
     # Write the results to a text file
-    write.xlsx(neutralform_texts_sentences, "welt_neutralforms_results.xlsx")
+    write.xlsx(neutralform_texts_sentences, "Kontext Sätze\\welt_neutralforms_results.xlsx")
   }
   
 }

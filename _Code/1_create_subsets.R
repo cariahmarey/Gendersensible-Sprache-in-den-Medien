@@ -4,10 +4,10 @@ library(tidyverse)
 # in this script the subsets of the datasets are generated 
 
 #---------- import the full datasets
-faz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\faz_full.csv", fileEncoding = "UTF-8")
-spiegel_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\spiegel_full.csv", fileEncoding = "UTF-8")
-taz_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\taz_full.csv", fileEncoding = "UTF-8")
-welt_full <- read.csv("C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\welt_full.csv")
+faz_full <- read.csv("~\\faz_full.csv", fileEncoding = "UTF-8")
+spiegel_full <- read.csv("~\\spiegel_full.csv", fileEncoding = "UTF-8")
+taz_full <- read.csv("~\\taz_full.csv", fileEncoding = "UTF-8")
+welt_full <- read.csv("~\\welt_full.csv")
 
 #---------- define search pattern
 search_pattern <- "Gendern|Gendersprache|Gender (Sprache|Sprachgebrauch)|Gender-(Sprache|Sprachgebrauch)|
@@ -133,8 +133,8 @@ welt_subset <- welt_subset[!duplicated(welt_subset),]
 list_subsets <- list(faz_subset, spiegel_subset, taz_subset, welt_subset)
 
 # export dataframes as csvs
-write.csv(faz_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\faz_subset.csv")
-write.csv(spiegel_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\spiegel_subset.csv")
-write.csv(taz_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\taz_subset.csv")
-write.csv(welt_subset, "C:\\Users\\mariu\\Documents\\Studium Leipzig\\Master\\Wintersemester 22-23\\Methods & Applications in DH\\Abschlussprojekt\\Datensatz\\Subset\\welt_subset.csv")
+write.csv(faz_subset, "Subsets\\faz_subset.csv")
+write.csv(spiegel_subset, "Subsets\\spiegel_subset.csv")
+write.csv(taz_subset, "Subsets\\taz_subset.csv")
+write.csv(welt_subset, "Subsets\\welt_subset.csv")
 

@@ -15,9 +15,9 @@ placeholder = "myplaceholder"
 
 #----- preprocessing
 #read in reference data
-comparison_text2020 <- readLines("deu_news_2020_30K-sentences.txt")
-comparison_text2021 <- readLines("deu_news_2021_30K-sentences.txt")
-comparison_text2022 <- readLines("deu_news_2022_30K-sentences.txt")
+comparison_text2020 <- readLines("Vergleichskorpus\\deu_news_2020_30K-sentences.txt")
+comparison_text2021 <- readLines("Vergleichskorpus\\deu_news_2021_30K-sentences.txt")
+comparison_text2022 <- readLines("Vergleichskorpus\\deu_news_2022_30K-sentences.txt")
 
 # create corpus
 reference_corpus <- c(comparison_text2020,comparison_text2021,comparison_text2022)

@@ -107,4 +107,4 @@ gendered_words_splitted <- gendered_words_splitted[!duplicated(gendered_words_sp
 gendered_words_splitted <- gendered_words_splitted[!apply(gendered_words_splitted == "", 1, all),] #1566 words
 
 # export csv 
-write.csv(gendered_words_splitted, "gendered_words_splitted.csv")
+write.csv(gendered_words_splitted, "Genderliste\\gendered_words_splitted.csv")

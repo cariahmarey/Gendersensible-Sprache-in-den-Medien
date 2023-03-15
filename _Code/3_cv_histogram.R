@@ -12,7 +12,7 @@ library(xlsx)
 
 #---------- dataframe with single events
 # import dataframe with single events from qualitative research
-single_events <- read.xlsx("Single Events.xlsx", sheetIndex = 1)
+single_events <- read.xlsx("CV Histogram\\Single Events.xlsx", sheetIndex = 1)
 
 # select only the columns "kurzbeschreibung" und "month"
 single_events <- select(single_events, kurzbeschreibung, month)
